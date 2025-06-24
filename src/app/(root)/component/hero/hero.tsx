@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import type React from "react"
-
 import { useState } from "react"
 
 interface FormData {
@@ -80,7 +79,7 @@ export default function Hero() {
     {
       question: "Do you offer international removal services?",
       answer:
-        "No, we  only provide state  removal services with proper documentation, customs clearance, and secure shipping. Our team handles all logistics to ensure your belongings reach their destination safely.",
+        "No, we only provide state removal services with proper documentation, customs clearance, and secure shipping. Our team handles all logistics to ensure your belongings reach their destination safely.",
     },
     {
       question: "What happens if my items are damaged during the move?",
@@ -224,7 +223,13 @@ export default function Hero() {
             {/* Center Content - Hero Image */}
             <div className="relative lg:col-span-1">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <Image src="/truck.png" alt="Professional moving services" className="w-full h-auto object-cover" />
+                <Image
+                  src="/himalayatruck.png?height=400&width=400"
+                  width={400}
+                  height={400}
+                  alt="Professional moving services"
+                  className="w-full h-auto object-cover"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
 
@@ -304,8 +309,8 @@ export default function Hero() {
                         <span className="text-blue-600">🌍</span>
                       </div>
                       <div>
-                        <h5 className="font-semibold text-gray-800 mb-2">Local & </h5>
-                        <p className="text-gray-600 text-sm">Comprehensive moving services within Australia .</p>
+                        <h5 className="font-semibold text-gray-800 mb-2">Local & Interstate</h5>
+                        <p className="text-gray-600 text-sm">Comprehensive moving services within Australia.</p>
                       </div>
                     </div>
 
@@ -364,7 +369,9 @@ export default function Hero() {
                 {/* Main Service Image */}
                 <div className="relative rounded-xl overflow-hidden shadow-lg">
                   <Image
-                    src="/truckfriend.png?height=200&width=300"
+                    src="/owner.png?height=200&width=300"
+                    width={300}
+                    height={200}
                     alt="Professional moving team"
                     className="w-full h-48 object-cover"
                   />
@@ -378,9 +385,11 @@ export default function Hero() {
                 {/* Additional Image Section */}
                 <div className="relative rounded-xl overflow-hidden shadow-lg">
                   <Image
-                    src="/herotruck.png?height=150&width=300"
+                    src="/truckfriend.png?height=150&width=300"
+                    width={300}
+                    height={150}
                     alt="Moving truck and team"
-                    className="w-full h-20object-cover"
+                    className="w-full h-32 object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <div className="absolute bottom-3 left-3 text-white">
@@ -560,7 +569,13 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Image src="/contact.png?height=48&width=48" alt="Contact us" className="w-23 h-23 object-contain" />
+                  <Image
+                    src="/placeholder.svg?height=48&width=48"
+                    width={48}
+                    height={48}
+                    alt="Contact us"
+                    className="w-12 h-12 object-contain"
+                  />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   1
@@ -577,9 +592,11 @@ export default function Hero() {
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Image
-                    src="/estimate.png?height=48&width=48"
+                    src="/placeholder.svg?height=48&width=48"
+                    width={48}
+                    height={48}
                     alt="Get estimate"
-                    className="w-22 h-28object-contain"
+                    className="w-12 h-12 object-contain"
                   />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -597,9 +614,11 @@ export default function Hero() {
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Image
-                    src="/packing.png?height=48&width=48"
+                    src="/placeholder.svg?height=48&width=48"
+                    width={48}
+                    height={48}
                     alt="Professional packing"
-                    className="w-24.5 h-24 object-contain"
+                    className="w-12 h-12 object-contain"
                   />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -617,9 +636,11 @@ export default function Hero() {
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Image
-                    src="/deliver.png?height=48&width=48"
+                    src="/placeholder.svg?height=48&width=48"
+                    width={48}
+                    height={48}
                     alt="Safe delivery"
-                    className="w-28 h-23 object-contain"
+                    className="w-12 h-12 object-contain"
                   />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -693,6 +714,7 @@ export default function Hero() {
           </div>
         </div>
       </section>
+
       <style jsx>{`
         @keyframes slideIn {
           from {

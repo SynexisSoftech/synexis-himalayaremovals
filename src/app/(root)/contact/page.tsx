@@ -152,8 +152,8 @@ export default function Contact() {
                       <h4 className="text-lg font-semibold text-gray-800 mb-1">
                         Phone
                       </h4>
-                      <a href="tel:+9779851331114" className="text-gray-600 hover:text-teal-600 transition-colors">
-                        +977-9851331114
+                      <a href="tel:0452272533" className="text-gray-600 hover:text-teal-600 transition-colors">
+                        0452272533
                       </a>{" "}
                       {/* Made clickable */}
                     </div>
@@ -184,7 +184,7 @@ export default function Contact() {
                         href="mailto:info@himalayaremovals.com.np"
                         className="text-gray-600 hover:text-teal-600 transition-colors"
                       >
-                        himalayaremovals@gmail.com
+                        himalayaremovals7@gmail.com
                       </a>{" "}
                       {/* Made clickable */}
                     </div>

@@ -80,32 +80,7 @@ export default function Services() {
   )
 
   const services = [
-    {
-      id: "packing-unpacking",
-      icon: (
-        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <title>Packing and Unpacking Service Icon</title>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-          />
-        </svg>
-      ),
-      title: "Packing & Unpacking",
-      description:
-        "Professional packing with quality materials including boxes, bubble wrap, and tape. Safe packing and unpacking services at your new location.",
-      features: ["Quality packing materials", "Safe & secure packing", "Unpacking services", "Fragile item protection"],
-      price: "Starting from $150",
-      duration: "2-4 hours",
-      popularity: 95,
-      testimonial: {
-        name: "Sarah Johnson",
-        rating: 5,
-        comment: "They packed everything so carefully! Not a single item was damaged during the move.",
-      },
-    },
+    
     {
       id: "loading-transportation",
       icon: (
@@ -159,10 +134,10 @@ export default function Services() {
       },
     },
     {
-      id: "storage-services",
+      id: "Rubbish Removal",
       icon: (
         <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <title>Storage Services Icon</title>
+          <title>Rubbish Removal Icon</title>
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -171,10 +146,10 @@ export default function Services() {
           />
         </svg>
       ),
-      title: "Storage Services",
+      title: "Rubbish Removal",
       description:
-        "Short and long-term storage solutions for your belongings. Secure storage units with climate control for furniture and valuable items.",
-      features: ["Short & long-term", "Secure storage units", "Climate controlled", "24/7 security"],
+        "We clear your space, so you can enjoy a cleaner, clutter-free environment.",
+      features: ["Short & long-term", "All Types of Waste Handled", "Climate controlled", "Eco-Friendly Disposal"],
       price: "Starting from $50/month",
       duration: "Flexible",
       popularity: 78,
@@ -583,11 +558,11 @@ export default function Services() {
             <div className="flex items-center gap-6 text-white">
               <div className="flex items-center gap-2">
                 <PhoneIcon className="w-5 h-5" />
-                <span className="font-medium">(555) 123-4567</span>
+                <span className="font-medium">0452272533</span>
               </div>
               <div className="flex items-center gap-2">
                 <MailIcon className="w-5 h-5" />
-                <span className="font-medium">himalayaremovals@gmail.com</span>
+                <span className="font-medium">himalayaremovals7@gmail.com</span>
               </div>
             </div>
           </div>

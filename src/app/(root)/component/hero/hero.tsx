@@ -411,8 +411,7 @@ export default function Hero() {
                   MOVING ANYTHING TO EVERYWHERE <span className="text-amber-300">Globally</span>
                 </h3>
                 <p className="text-lg opacity-90">
-                  Your trusted moving company is now serving across Australia. Professional, reliable, and affordable
-                  moving solutions.
+                  Your trusted partner in all things moving.Local Move,Interstate move ,Rubbish Removal.Sydney Based.
                 </p>
               </div>
 
@@ -570,11 +569,11 @@ export default function Hero() {
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Image
-                    src="/placeholder.svg?height=48&width=48"
-                    width={48}
-                    height={48}
+                    src="/contact.png"
+                    width={90}
+                    height={90}
                     alt="Contact us"
-                    className="w-12 h-12 object-contain"
+                    className=" object-contain"
                   />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -590,13 +589,13 @@ export default function Hero() {
             {/* Step 2: Get Estimate */}
             <div className="text-center group">
               <div className="relative mb-6">
-                <div className="w-24 h-24 mx-auto bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div className="w-24 h-24 mx-auto bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Image
-                    src="/placeholder.svg?height=48&width=48"
-                    width={48}
-                    height={48}
+                    src="/estimate.png?"
+                    width={100}
+                    height={100}
                     alt="Get estimate"
-                    className="w-12 h-12 object-contain"
+                    className=" object-contain"
                   />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -614,11 +613,11 @@ export default function Hero() {
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Image
-                    src="/placeholder.svg?height=48&width=48"
-                    width={48}
-                    height={48}
+                    src="/packing.png?"
+                    width={500}
+                    height={500}
                     alt="Professional packing"
-                    className="w-12 h-12 object-contain"
+                    className=" object-contain"
                   />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
@@ -636,11 +635,11 @@ export default function Hero() {
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   <Image
-                    src="/placeholder.svg?height=48&width=48"
-                    width={48}
-                    height={48}
+                    src="/herotruck.png"
+                    width={90}
+                    height={90}
                     alt="Safe delivery"
-                    className="w-12 h-12 object-contain"
+                    className=" object-contain"
                   />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">

@@ -477,7 +477,7 @@ export default function Services() {
                         </div>
                         <span className="text-sm font-medium text-gray-700">{service.testimonial.name}</span>
                       </div>
-                      <p className="text-sm text-gray-600 italic">"{service.testimonial.comment}"</p>
+                      <p className="text-sm text-gray-600 italic">They packed everything so carefully! Not a single item was damaged during the move.</p>
                     </div>
 
                     <div className="flex gap-2">

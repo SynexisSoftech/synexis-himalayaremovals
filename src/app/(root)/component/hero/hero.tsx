@@ -1,9 +1,9 @@
 "use client"
 
+import Image from "next/image"
 import type React from "react"
 
 import { useState } from "react"
-
 
 interface FormData {
   fromLocation: string
@@ -174,7 +174,7 @@ export default function Hero() {
 
       // Clear success message after 5 seconds
       setTimeout(() => setSubmitStatus("idle"), 5000)
-    } catch (error) {
+    } catch {
       setSubmitStatus("error")
       setTimeout(() => setSubmitStatus("idle"), 5000)
     } finally {
@@ -192,7 +192,6 @@ export default function Hero() {
 
   return (
     <div>
-  
       <section className="relative min-h-screen overflow-hidden" style={{ backgroundColor: "#f5fcfb" }}>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -225,7 +224,7 @@ export default function Hero() {
             {/* Center Content - Hero Image */}
             <div className="relative lg:col-span-1">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img src="/truck.png" alt="Professional moving services" className="w-full h-auto object-cover" />
+                <Image src="/truck.png" alt="Professional moving services" className="w-full h-auto object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
 
@@ -254,7 +253,6 @@ export default function Hero() {
             <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  
                   <div>
                     <h3 className="text-2xl font-bold">About Himalaya Removals</h3>
                     <p className="text-teal-100">Your Trusted Moving Partner</p>
@@ -307,9 +305,7 @@ export default function Hero() {
                       </div>
                       <div>
                         <h5 className="font-semibold text-gray-800 mb-2">Local & </h5>
-                        <p className="text-gray-600 text-sm">
-                          Comprehensive moving services within Australia .
-                        </p>
+                        <p className="text-gray-600 text-sm">Comprehensive moving services within Australia .</p>
                       </div>
                     </div>
 
@@ -350,7 +346,6 @@ export default function Hero() {
                   </div>
                 </div>
 
-               
                 {/* Call to Action */}
                 <div className="text-center transform transition-all duration-700 delay-600 translate-y-0 opacity-100">
                   <button
@@ -368,7 +363,7 @@ export default function Hero() {
 
                 {/* Main Service Image */}
                 <div className="relative rounded-xl overflow-hidden shadow-lg">
-                  <img
+                  <Image
                     src="/truckfriend.png?height=200&width=300"
                     alt="Professional moving team"
                     className="w-full h-48 object-cover"
@@ -378,11 +373,11 @@ export default function Hero() {
                     <h5 className="font-semibold text-lg">Professional Team</h5>
                     <p className="text-sm opacity-90">Expert handling of your belongings</p>
                   </div>
-                </div>  
+                </div>
 
                 {/* Additional Image Section */}
                 <div className="relative rounded-xl overflow-hidden shadow-lg">
-                  <img
+                  <Image
                     src="/herotruck.png?height=150&width=300"
                     alt="Moving truck and team"
                     className="w-full h-20object-cover"
@@ -407,8 +402,8 @@ export default function Hero() {
                   MOVING ANYTHING TO EVERYWHERE <span className="text-amber-300">Globally</span>
                 </h3>
                 <p className="text-lg opacity-90">
-                  Your trusted moving company is now serving across Australia. Professional, reliable,
-                  and affordable moving solutions.
+                  Your trusted moving company is now serving across Australia. Professional, reliable, and affordable
+                  moving solutions.
                 </p>
               </div>
 
@@ -565,7 +560,7 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <img src="/contact.png?height=48&width=48" alt="Contact us" className="w-23 h-23 object-contain" />
+                  <Image src="/contact.png?height=48&width=48" alt="Contact us" className="w-23 h-23 object-contain" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   1
@@ -573,7 +568,7 @@ export default function Hero() {
               </div>
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Contact</h3>
               <p className="text-gray-600 text-sm leading-relaxed">
-                Get in touch with us via phone, email, or our online form. We're available 24/7 to assist you.
+                Get in touch with us via phone, email, or our online form. We&apos;re available 24/7 to assist you.
               </p>
             </div>
 
@@ -581,7 +576,11 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <img src="/estimate.png?height=48&width=48" alt="Get estimate" className="w-22 h-28object-contain" />
+                  <Image
+                    src="/estimate.png?height=48&width=48"
+                    alt="Get estimate"
+                    className="w-22 h-28object-contain"
+                  />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   2
@@ -597,7 +596,7 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <img
+                  <Image
                     src="/packing.png?height=48&width=48"
                     alt="Professional packing"
                     className="w-24.5 h-24 object-contain"
@@ -617,7 +616,11 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <img src="/deliver.png?height=48&width=48" alt="Safe delivery" className="w-28 h-23 object-contain" />
+                  <Image
+                    src="/deliver.png?height=48&width=48"
+                    alt="Safe delivery"
+                    className="w-28 h-23 object-contain"
+                  />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   4
@@ -629,8 +632,6 @@ export default function Hero() {
               </p>
             </div>
           </div>
-
-        
 
           {/* Call to Action */}
           <div className="text-center mt-12">
@@ -658,8 +659,8 @@ export default function Hero() {
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">Frequently Asked Questions</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Get answers to common questions about our removal services. Can't find what you're looking for? Contact us
-              directly.
+              Get answers to common questions about our removal services. Can&apos;t find what you&apos;re looking for?
+              Contact us directly.
             </p>
           </div>
 
@@ -690,8 +691,6 @@ export default function Hero() {
               </div>
             ))}
           </div>
-
-         
         </div>
       </section>
       <style jsx>{`

@@ -81,7 +81,7 @@ export default function About() {
      {
       name: "Om don",
       role: "Customer Relations Manager",
-      bio: "Sarah's friendly approach and problem-solving skills ensure every customer feels valued and supported throughout their move.",
+      bio: "Sarah&apos;s friendly approach and problem-solving skills ensure every customer feels valued and supported throughout their move.",
       image: "/placeholder.svg?height=300&width=300",
     }, {
       name: "Sujan don",
@@ -219,7 +219,7 @@ export default function About() {
                 </h2>
                 <p className="text-lg text-gray-600 leading-relaxed mb-8">
                   With years of experience in the moving industry, Himalaya Removals has established itself as
-                  Australia's trusted moving partner. We understand that moving can be stressful, which is why we're
+                  Australia&apos;s trusted moving partner. We understand that moving can be stressful, which is why we&apos;re
                   committed to making your relocation as smooth and hassle-free as possible.
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed">
@@ -378,7 +378,7 @@ export default function About() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-orange-500">Us?</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Here's what sets Himalaya Removals apart from other moving companies and makes us the preferred choice for
+              Here&apos;s what sets Himalaya Removals apart from other moving companies and makes us the preferred choice for
               thousands of customers.
             </p>
           </div>

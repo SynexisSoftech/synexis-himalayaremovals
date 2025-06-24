@@ -86,7 +86,7 @@ export default function Contact() {
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Ready to start your move? Contact us today for a free quote and
-              consultation. We're here to make your relocation smooth and
+              consultation. We&apos;re here to make your relocation smooth and
               stress-free.
             </p>
           </div>
@@ -225,7 +225,7 @@ export default function Contact() {
                   24/7 Emergency Service
                 </h4>
                 <p className="text-orange-700 mb-3">
-                  Need urgent moving assistance? We're available round the clock
+                  Need urgent moving assistance? We&apos;re available round the clock
                   for emergency relocations.
                 </p>
                 <a

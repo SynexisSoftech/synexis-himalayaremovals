@@ -73,27 +73,12 @@ export default function About() {
   const teamMembers = [
    
     {
-      name: "Samir don",
+      name: "Sandesh tandukar",
       role: "Customer Relations Manager",
-      bio: "Sarah's friendly approach and problem-solving skills ensure every customer feels valued and supported throughout their move.",
-      image: "/placeholder.svg?height=300&width=300",
+      bio: "We are Himalaya Removals. We offer local and interstate home removal services with: ✅ Professional Removalists ✅ Insurance ✅ Goods Handled with Care Message",
+      image: "/sandesh.png?height=300&width=300",
     },
-     {
-      name: "Om don",
-      role: "Customer Relations Manager",
-      bio: "Sarah&apos;s friendly approach and problem-solving skills ensure every customer feels valued and supported throughout their move.",
-      image: "/placeholder.svg?height=300&width=300",
-    }, {
-      name: "Sujan don",
-      role: "Customer Relations Manager",
-      bio: "Sarah's friendly approach and problem-solving skills ensure every customer feels valued and supported throughout their move.",
-      image: "/placeholder.svg?height=300&width=300",
-    }, {
-      name: "Biplove Maha don",
-      role: "Customer Relations Manager",
-      bio: "Sarah's friendly approach and problem-solving skills ensure every customer feels valued and supported throughout their move.",
-      image: "/placeholder.svg?height=300&width=300",
-    },
+     
   ]
 
   const values = [
@@ -401,24 +386,32 @@ export default function About() {
       {/* Call to Action */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="bg-gradient-to-r from-teal-500 to-orange-500 rounded-2xl p-12 text-white shadow-2xl">
-              <h3 className="text-3xl font-bold mb-4">Ready to Make Your Move Stress-Free?</h3>
-              <p className="text-xl mb-8 max-w-3xl mx-auto">
-                Contact us today for a free consultation and personalized moving quote. Our team is ready to help you
-                plan your perfect move with our award-winning service.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="bg-white text-teal-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300 text-lg">
-                  Get Free Quote
-                </button>
-                <button className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-teal-600 transition-all duration-300 text-lg">
-                  Call Now: 0452272533
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+  <div className="text-center">
+    <div
+      className="rounded-2xl p-12 shadow-xl"
+      style={{
+        background: "linear-gradient(135deg, #eaf4f8, #f5f9fb)",
+      }}
+    >
+      <h3 className="text-3xl font-bold mb-4 text-[#1f2937]">
+        Ready to Make Your Move Stress-Free?
+      </h3>
+      <p className="text-xl mb-8 max-w-3xl mx-auto text-[#374151]">
+        Contact us today for a free consultation and personalized moving quote. Our team is ready to help you
+        plan your perfect move with our award-winning service.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <button className="bg-[#89f0e0] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#59e3cc] transition-all duration-300 text-lg">
+          Get Free Quote
+        </button>
+        <button className="border-2 border-[#89f0e0] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#89f0e0] hover:text-white transition-all duration-300 text-lg">
+          Call Now: 0452 272 533
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
       </section>
 
       <Footer/>

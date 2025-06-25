@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import type React from "react"
 import { useState } from "react"
 
@@ -42,7 +43,6 @@ export default function Hero() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
-  const [isLearnMoreOpen, setIsLearnMoreOpen] = useState(false)
 
   const services = [
     { id: "household", label: "Household Moving" },
@@ -185,10 +185,6 @@ export default function Hero() {
     setOpenFAQ(openFAQ === index ? null : index)
   }
 
-  const toggleLearnMore = () => {
-    setIsLearnMoreOpen(!isLearnMoreOpen)
-  }
-
   return (
     <div>
       <section className="relative min-h-screen overflow-hidden" style={{ backgroundColor: "#f5fcfb" }}>
@@ -209,14 +205,14 @@ export default function Hero() {
                 </p>
               </div>
 
-              {/* Learn More Button */}
+              {/* Learn More Button - Navigate to About page */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={toggleLearnMore}
-                  className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-teal-600 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                <Link
+                  href="/about"
+                  className="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-teal-600 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-center"
                 >
-                  {isLearnMoreOpen ? "Close Info" : "Learn More"}
-                </button>
+                  Learn More
+                </Link>
               </div>
             </div>
 
@@ -250,157 +246,6 @@ export default function Hero() {
             </div>
           </div>
         </div>
-
-        {/* Full Width Dropdown Content - Positioned after the main grid */}
-        {isLearnMoreOpen && (
-          <div className="mt-8 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden transform transition-all duration-500 ease-out animate-slideDown">
-            {/* Dropdown Header */}
-            <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <h3 className="text-2xl font-bold">About Himalaya Removals</h3>
-                    <p className="text-teal-100">Your Trusted Moving Partner</p>
-                  </div>
-                </div>
-                <button
-                  onClick={toggleLearnMore}
-                  className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center hover:bg-opacity-30 transition-colors duration-200"
-                >
-                  <span className="text-black text-lg font-bold">×</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Dropdown Body with Two Columns - Full Width */}
-            <div className="grid lg:grid-cols-3 gap-8 p-8">
-              {/* Left Side - Content Section */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Key Features */}
-                <div className="transform transition-all duration-700 delay-300 translate-y-0 opacity-100">
-                  <h4 className="text-xl font-bold text-gray-800 mb-6">Why Choose Himalaya Removals?</h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-teal-600">🛡️</span>
-                      </div>
-                      <div>
-                        <h5 className="font-semibold text-gray-800 mb-2">Fully Insured & Licensed</h5>
-                        <p className="text-gray-600 text-sm">
-                          Complete protection for your belongings with comprehensive insurance coverage.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-orange-600">👥</span>
-                      </div>
-                      <div>
-                        <h5 className="font-semibold text-gray-800 mb-2">Expert Team</h5>
-                        <p className="text-gray-600 text-sm">
-                          Trained professionals with years of experience in handling all types of moves.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-blue-600">🌍</span>
-                      </div>
-                      <div>
-                        <h5 className="font-semibold text-gray-800 mb-2">Local & Interstate</h5>
-                        <p className="text-gray-600 text-sm">Comprehensive moving services within Australia.</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start space-x-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-green-600">💰</span>
-                      </div>
-                      <div>
-                        <h5 className="font-semibold text-gray-800 mb-2">Transparent Pricing</h5>
-                        <p className="text-gray-600 text-sm">
-                          No hidden fees or surprise charges. Clear, upfront pricing for all services.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Services */}
-                <div className="transform transition-all duration-700 delay-400 translate-y-0 opacity-100">
-                  <h4 className="text-xl font-bold text-gray-800 mb-6">Our Services</h4>
-                  <div className="grid grid-cols-4 gap-4">
-                    <div className="bg-white border-2 border-teal-100 rounded-lg p-4 text-center hover:border-teal-300 transition-colors duration-200 hover:shadow-md">
-                      <div className="text-3xl mb-2">🏠</div>
-                      <h5 className="font-semibold text-gray-800 text-sm">Residential Moving</h5>
-                    </div>
-                    <div className="bg-white border-2 border-orange-100 rounded-lg p-4 text-center hover:border-orange-300 transition-colors duration-200 hover:shadow-md">
-                      <div className="text-3xl mb-2">🏢</div>
-                      <h5 className="font-semibold text-gray-800 text-sm">Office Relocation</h5>
-                    </div>
-                    <div className="bg-white border-2 border-blue-100 rounded-lg p-4 text-center hover:border-blue-300 transition-colors duration-200 hover:shadow-md">
-                      <div className="text-3xl mb-2">📦</div>
-                      <h5 className="font-semibold text-gray-800 text-sm">Packing Services</h5>
-                    </div>
-                    <div className="bg-white border-2 border-green-100 rounded-lg p-4 text-center hover:border-green-300 transition-colors duration-200 hover:shadow-md">
-                      <div className="text-3xl mb-2">🏪</div>
-                      <h5 className="font-semibold text-gray-800 text-sm">Storage Solutions</h5>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Call to Action */}
-                <div className="text-center transform transition-all duration-700 delay-600 translate-y-0 opacity-100">
-                  <button
-                    onClick={toggleLearnMore}
-                    className="border-2 border-teal-500 text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-teal-50 transition-all duration-300"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-
-              {/* Right Side - Images Section */}
-              <div className="lg:col-span-1 space-y-6">
-                <h4 className="text-xl font-bold text-gray-800 mb-6">Our Services in Action</h4>
-
-                {/* Main Service Image */}
-                <div className="relative rounded-xl overflow-hidden shadow-lg">
-                  <Image
-                    src="/owner.png?height=200&width=300"
-                    width={300}
-                    height={200}
-                    alt="Professional moving team"
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  <div className="absolute bottom-4 left-4 text-white">
-                    <h5 className="font-semibold text-lg">Professional Team</h5>
-                    <p className="text-sm opacity-90">Expert handling of your belongings</p>
-                  </div>
-                </div>
-
-                {/* Additional Image Section */}
-                <div className="relative rounded-xl overflow-hidden shadow-lg">
-                  <Image
-                    src="/truckfriend.png?height=150&width=300"
-                    width={300}
-                    height={150}
-                    alt="Moving truck and team"
-                    className="w-full h-32 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                  <div className="absolute bottom-3 left-3 text-white">
-                    <h5 className="font-semibold">Ready to Move?</h5>
-                    <p className="text-xs opacity-90">Contact us today!</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Booking Section */}
         <div className="text-gray-800" style={{ backgroundColor: "#f5fcfb" }}>
@@ -568,13 +413,7 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Image
-                    src="/contact.png"
-                    width={90}
-                    height={90}
-                    alt="Contact us"
-                    className=" object-contain"
-                  />
+                  <Image src="/contact.png" width={90} height={90} alt="Contact us" className=" object-contain" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   1
@@ -590,13 +429,7 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Image
-                    src="/estimate.png?"
-                    width={100}
-                    height={100}
-                    alt="Get estimate"
-                    className=" object-contain"
-                  />
+                  <Image src="/estimate.png?" width={100} height={100} alt="Get estimate" className=" object-contain" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   2
@@ -634,13 +467,7 @@ export default function Hero() {
             <div className="text-center group">
               <div className="relative mb-6">
                 <div className="w-24 h-24 mx-auto bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <Image
-                    src="/herotruck.png"
-                    width={90}
-                    height={90}
-                    alt="Safe delivery"
-                    className=" object-contain"
-                  />
+                  <Image src="/herotruck.png" width={90} height={90} alt="Safe delivery" className=" object-contain" />
                 </div>
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
                   4

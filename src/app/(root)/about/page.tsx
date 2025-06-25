@@ -1,4 +1,3 @@
-
 import Image from "next/image"
 import Header from "../component/header/header"
 import Footer from "../component/footer/footer"
@@ -71,14 +70,12 @@ export default function About() {
   ]
 
   const teamMembers = [
-   
     {
       name: "Sandesh tandukar",
       role: "Customer Relations Manager",
       bio: "We are Himalaya Removals. We offer local and interstate home removal services with: ✅ Professional Removalists ✅ Insurance ✅ Goods Handled with Care Message",
       image: "/sandesh.png?height=300&width=300",
     },
-     
   ]
 
   const values = [
@@ -189,6 +186,140 @@ export default function About() {
     <div>
       <Header />
 
+      {/* Dropdown Content Section - At the Top */}
+      <section className="py-6 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="bg-gradient-to-r from-white to-white text-black p-8
+           rounded-t-2xl">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold ">About Himalaya Removals</h1>
+              <p className="text-xl text-[#007870]">Your Trusted Moving Partner</p>
+            </div>
+          </div>
+
+          {/* Content Body */}
+          <div className="bg-gray-50 rounded-b-2xl shadow-2xl border border-gray-100 overflow-hidden">
+            <div className="grid lg:grid-cols-3 gap-8 p-8">
+              {/* Left Side - Content Section */}
+              <div className="lg:col-span-2 space-y-8">
+                {/* Key Features */}
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-6">Why Choose Himalaya Removals?</h3>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-teal-600 text-xl">🛡️</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Fully Insured & Licensed</h4>
+                        <p className="text-gray-600">
+                          Complete protection for your belongings with comprehensive insurance coverage.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-orange-600 text-xl">👥</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Expert Team</h4>
+                        <p className="text-gray-600">
+                          Trained professionals with years of experience in handling all types of moves.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-blue-600 text-xl">🌍</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Local & Interstate</h4>
+                        <p className="text-gray-600">Comprehensive moving services within Australia.</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-4">
+                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-green-600 text-xl">💰</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-800 text-lg mb-2">Transparent Pricing</h4>
+                        <p className="text-gray-600">
+                          No hidden fees or surprise charges. Clear, upfront pricing for all services.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Services Grid */}
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-6">Our Services</h3>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="bg-white border-2 border-teal-100 rounded-lg p-4 text-center hover:border-teal-300 transition-colors duration-200 hover:shadow-md">
+                      <div className="text-3xl mb-2">🏠</div>
+                      <h4 className="font-semibold text-gray-800 text-sm">Residential Moving</h4>
+                    </div>
+                    <div className="bg-white border-2 border-orange-100 rounded-lg p-4 text-center hover:border-orange-300 transition-colors duration-200 hover:shadow-md">
+                      <div className="text-3xl mb-2">🏢</div>
+                      <h4 className="font-semibold text-gray-800 text-sm">Office Relocation</h4>
+                    </div>
+                    <div className="bg-white border-2 border-blue-100 rounded-lg p-4 text-center hover:border-blue-300 transition-colors duration-200 hover:shadow-md">
+                      <div className="text-3xl mb-2">📦</div>
+                      <h4 className="font-semibold text-gray-800 text-sm">Packing Services</h4>
+                    </div>
+                    <div className="bg-white border-2 border-green-100 rounded-lg p-4 text-center hover:border-green-300 transition-colors duration-200 hover:shadow-md">
+                      <div className="text-3xl mb-2">🏪</div>
+                      <h4 className="font-semibold text-gray-800 text-sm">Storage Solutions</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - Images Section */}
+              <div className="lg:col-span-1 space-y-6">
+                <h3 className="text-xl font-bold text-gray-800 mb-6">Our Services in Action</h3>
+
+                {/* Main Service Image */}
+                <div className="relative rounded-xl overflow-hidden shadow-lg">
+                  <Image
+                    src="/owner.png?height=200&width=300"
+                    width={300}
+                    height={200}
+                    alt="Professional moving team"
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h4 className="font-semibold text-lg">Professional Team</h4>
+                    <p className="text-sm opacity-90">Expert handling of your belongings</p>
+                  </div>
+                </div>
+
+                {/* Additional Image Section */}
+                <div className="relative rounded-xl overflow-hidden shadow-lg">
+                  <Image
+                    src="/truckfriend.png?height=150&width=300"
+                    width={300}
+                    height={150}
+                    alt="Moving truck and team"
+                    className="w-full h-32 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute bottom-3 left-3 text-white">
+                    <h4 className="font-semibold">Ready to Move?</h4>
+                    <p className="text-xs opacity-90">Contact us today!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-br from-teal-50 via-slate-50 to-orange-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -204,8 +335,8 @@ export default function About() {
                 </h2>
                 <p className="text-lg text-gray-600 leading-relaxed mb-8">
                   With years of experience in the moving industry, Himalaya Removals has established itself as
-                  Australia&apos;s trusted moving partner. We understand that moving can be stressful, which is why we&apos;re
-                  committed to making your relocation as smooth and hassle-free as possible.
+                  Australia&apos;s trusted moving partner. We understand that moving can be stressful, which is why
+                  we&apos;re committed to making your relocation as smooth and hassle-free as possible.
                 </p>
                 <p className="text-lg text-gray-600 leading-relaxed">
                   Our team of professional movers is trained to handle all types of moves, from residential relocations
@@ -339,18 +470,6 @@ export default function About() {
               </div>
             ))}
           </div>
-
-          {/* <div className="text-center">
-            <div className="bg-gradient-to-r from-teal-500 to-orange-500 rounded-2xl p-8 text-white">
-              <h3 className="text-2xl font-bold mb-4">Don't see your area listed?</h3>
-              <p className="text-lg mb-6">
-                We're expanding our services! Contact us to check if we can serve your location.
-              </p>
-              <button className="bg-white text-teal-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-300">
-                Check Service Area
-              </button>
-            </div>
-          </div> */}
         </div>
       </section>
 
@@ -363,8 +482,8 @@ export default function About() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-orange-500">Us?</span>
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Here&apos;s what sets Himalaya Removals apart from other moving companies and makes us the preferred choice for
-              thousands of customers.
+              Here&apos;s what sets Himalaya Removals apart from other moving companies and makes us the preferred
+              choice for thousands of customers.
             </p>
           </div>
 
@@ -386,35 +505,32 @@ export default function About() {
       {/* Call to Action */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-  <div className="text-center">
-    <div
-      className="rounded-2xl p-12 shadow-xl"
-      style={{
-        background: "linear-gradient(135deg, #eaf4f8, #f5f9fb)",
-      }}
-    >
-      <h3 className="text-3xl font-bold mb-4 text-[#1f2937]">
-        Ready to Make Your Move Stress-Free?
-      </h3>
-      <p className="text-xl mb-8 max-w-3xl mx-auto text-[#374151]">
-        Contact us today for a free consultation and personalized moving quote. Our team is ready to help you
-        plan your perfect move with our award-winning service.
-      </p>
-      <div className="flex flex-col sm:flex-row gap-4 justify-center">
-        <button className="bg-[#89f0e0] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#59e3cc] transition-all duration-300 text-lg">
-          Get Free Quote
-        </button>
-        <button className="border-2 border-[#89f0e0] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#89f0e0] hover:text-white transition-all duration-300 text-lg">
-          Call Now: 0452 272 533
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
+          <div className="text-center">
+            <div
+              className="rounded-2xl p-12 shadow-xl"
+              style={{
+                background: "linear-gradient(135deg, #eaf4f8, #f5f9fb)",
+              }}
+            >
+              <h3 className="text-3xl font-bold mb-4 text-[#1f2937]">Ready to Make Your Move Stress-Free?</h3>
+              <p className="text-xl mb-8 max-w-3xl mx-auto text-[#374151]">
+                Contact us today for a free consultation and personalized moving quote. Our team is ready to help you
+                plan your perfect move with our award-winning service.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="bg-[#89f0e0] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#59e3cc] transition-all duration-300 text-lg">
+                  Get Free Quote
+                </button>
+                <button className="border-2 border-[#89f0e0] text-black px-8 py-4 rounded-lg font-semibold hover:bg-[#89f0e0] hover:text-white transition-all duration-300 text-lg">
+                  Call Now: 0452 272 533
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <Footer/>
+      <Footer />
     </div>
   )
 }

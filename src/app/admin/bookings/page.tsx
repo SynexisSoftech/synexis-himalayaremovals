@@ -1,504 +1,748 @@
 "use client"
 
 import { useState } from "react"
-import {
-  Calendar,
-  Search,
-  Filter,
-  MoreHorizontal,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  Users,
-  DollarSign,
-  CalendarDays,
-  ChevronDown,
-} from "lucide-react"
+import { Search, Filter, Plus, Eye, Edit, Trash2, Calendar, MapPin, Phone, Save, X } from "lucide-react"
 
-// Mock data for bookings
-const bookings = [
-  {
-    id: "BK001",
-    customerName: "John Smith",
-    email: "john.smith@email.com",
-    service: "Conference Room A",
-    date: "2024-01-15",
-    time: "09:00 - 11:00",
-    duration: "2 hours",
-    status: "confirmed",
-    amount: 150,
-    guests: 8,
-    notes: "Team meeting with external clients",
-  },
-  {
-    id: "BK002",
-    customerName: "Sarah Johnson",
-    email: "sarah.j@company.com",
-    service: "Event Hall",
-    date: "2024-01-18",
-    time: "18:00 - 23:00",
-    duration: "5 hours",
-    status: "pending",
-    amount: 800,
-    guests: 50,
-    notes: "Corporate dinner event",
-  },
-  {
-    id: "BK003",
-    customerName: "Mike Wilson",
-    email: "mike.wilson@startup.io",
-    service: "Meeting Room B",
-    date: "2024-01-12",
-    time: "14:00 - 16:00",
-    duration: "2 hours",
-    status: "cancelled",
-    amount: 100,
-    guests: 4,
-    notes: "Product demo session",
-  },
-  {
-    id: "BK004",
-    customerName: "Emily Davis",
-    email: "emily.davis@agency.com",
-    service: "Workshop Space",
-    date: "2024-01-20",
-    time: "10:00 - 17:00",
-    duration: "7 hours",
-    status: "confirmed",
-    amount: 450,
-    guests: 25,
-    notes: "Design thinking workshop",
-  },
-  {
-    id: "BK005",
-    customerName: "David Brown",
-    email: "d.brown@consulting.com",
-    service: "Conference Room C",
-    date: "2024-01-16",
-    time: "13:00 - 15:00",
-    duration: "2 hours",
-    status: "pending",
-    amount: 120,
-    guests: 6,
-    notes: "Client presentation",
-  },
-]
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "confirmed":
-      return "bg-green-100 text-green-800"
-    case "pending":
-      return "bg-yellow-100 text-yellow-800"
-    case "cancelled":
-      return "bg-red-100 text-red-800"
-    default:
-      return "bg-gray-100 text-gray-800"
-  }
+interface Booking {
+  id: string
+  customer: string
+  email: string
+  phone: string
+  service: string
+  fromAddress: string
+  toAddress: string
+  date: string
+  time: string
+  status: "Pending" | "Confirmed" | "Completed" | "Cancelled"
+  amount: string
+  notes: string
 }
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case "confirmed":
-      return <CheckCircle className="w-4 h-4" />
-    case "pending":
-      return <Clock className="w-4 h-4" />
-    case "cancelled":
-      return <XCircle className="w-4 h-4" />
-    default:
-      return <Clock className="w-4 h-4" />
-  }
-}
-
-export default function BookingsAdmin() {
+export default function BookingsPage() {
+  const [bookings, setBookings] = useState<Booking[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [selectedBooking, setSelectedBooking] = useState<(typeof bookings)[0] | null>(null)
-  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null)
-  const [selectOpen, setSelectOpen] = useState(false)
+  const [isAddingBooking, setIsAddingBooking] = useState(false)
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null)
+  const [viewingBooking, setViewingBooking] = useState<Booking | null>(null)
+
+  const [formData, setFormData] = useState<Partial<Booking>>({
+    customer: "",
+    email: "",
+    phone: "",
+    service: "",
+    fromAddress: "",
+    toAddress: "",
+    date: "",
+    time: "",
+    status: "Pending",
+    amount: "",
+    notes: "",
+  })
+
+  const services = [
+    "House Removal",
+    "Office Relocation",
+    "Storage Service",
+    "Packing Service",
+    "International Moving",
+    "Local Moving",
+  ]
 
   const filteredBookings = bookings.filter((booking) => {
     const matchesSearch =
-      booking.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.service.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || booking.status === statusFilter
+      booking.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      booking.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      booking.email.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesStatus = statusFilter === "all" || booking.status.toLowerCase() === statusFilter
     return matchesSearch && matchesStatus
   })
 
-  const stats = {
-    totalBookings: bookings.length,
-    confirmedBookings: bookings.filter((b) => b.status === "confirmed").length,
-    pendingBookings: bookings.filter((b) => b.status === "pending").length,
-    totalRevenue: bookings.filter((b) => b.status === "confirmed").reduce((sum, b) => sum + b.amount, 0),
+  const generateBookingId = () => {
+    return `BK${String(bookings.length + 1).padStart(3, "0")}`
   }
 
-  const handleStatusChange = (bookingId: string, newStatus: string) => {
-    console.log(`Changing booking ${bookingId} status to ${newStatus}`)
-    setDropdownOpen(null)
+  const resetForm = () => {
+    setFormData({
+      customer: "",
+      email: "",
+      phone: "",
+      service: "",
+      fromAddress: "",
+      toAddress: "",
+      date: "",
+      time: "",
+      status: "Pending",
+      amount: "",
+      notes: "",
+    })
   }
 
-  const toggleDropdown = (bookingId: string) => {
-    setDropdownOpen(dropdownOpen === bookingId ? null : bookingId)
+  const handleAddBooking = () => {
+    if (!formData.customer || !formData.email || !formData.service) return
+
+    const newBooking: Booking = {
+      id: generateBookingId(),
+      customer: formData.customer!,
+      email: formData.email!,
+      phone: formData.phone || "",
+      service: formData.service!,
+      fromAddress: formData.fromAddress || "",
+      toAddress: formData.toAddress || "",
+      date: formData.date || "",
+      time: formData.time || "",
+      status: (formData.status as Booking["status"]) || "Pending",
+      amount: formData.amount || "",
+      notes: formData.notes || "",
+    }
+
+    setBookings([...bookings, newBooking])
+    resetForm()
+    setIsAddingBooking(false)
+  }
+
+  const handleEditBooking = () => {
+    if (!editingBooking) return
+
+    const updatedBookings = bookings.map((booking) => (booking.id === editingBooking.id ? editingBooking : booking))
+    setBookings(updatedBookings)
+    setEditingBooking(null)
+  }
+
+  const handleDeleteBooking = (id: string) => {
+    if (confirm("Are you sure you want to delete this booking?")) {
+      setBookings(bookings.filter((booking) => booking.id !== id))
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Completed":
+        return "bg-green-100 text-green-800"
+      case "Confirmed":
+        return "bg-blue-100 text-blue-800"
+      case "Pending":
+        return "bg-yellow-100 text-yellow-800"
+      case "Cancelled":
+        return "bg-red-100 text-red-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Bookings Management</h1>
-              <p className="text-gray-600">Manage and track all venue bookings</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search bookings..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-80 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors">
-                <Calendar className="w-4 h-4" />
-                New Booking
-              </button>
-            </div>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Bookings</h1>
+            <p className="text-gray-600 mt-1">Manage and view all customer bookings</p>
           </div>
+          <button
+            onClick={() => setIsAddingBooking(true)}
+            className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            New Booking
+          </button>
         </div>
-      </header>
 
-      <div className="p-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalBookings}</p>
-                <p className="text-xs text-gray-500 mt-1">+12% from last month</p>
-              </div>
-              <CalendarDays className="h-8 w-8 text-gray-400" />
+        {/* Filters */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search bookings..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Confirmed</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.confirmedBookings}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {Math.round((stats.confirmedBookings / stats.totalBookings) * 100)}% of total
-                </p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.pendingBookings}</p>
-                <p className="text-xs text-gray-500 mt-1">Awaiting confirmation</p>
-              </div>
-              <Clock className="h-8 w-8 text-yellow-600" />
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">${stats.totalRevenue}</p>
-                <p className="text-xs text-gray-500 mt-1">From confirmed bookings</p>
-              </div>
-              <DollarSign className="h-8 w-8 text-gray-400" />
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-gray-400" />
+              <select
+                className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
             </div>
           </div>
         </div>
 
-        {/* Filters and Table */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">All Bookings</h2>
-              <div className="flex items-center gap-4">
-                <div className="relative">
-                  <button
-                    onClick={() => setSelectOpen(!selectOpen)}
-                    className="w-40 px-3 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex items-center justify-between"
-                  >
-                    <span className="text-sm">
-                      {statusFilter === "all"
-                        ? "All Status"
-                        : statusFilter.charAt(0).toUpperCase() + statusFilter.slice(1)}
-                    </span>
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
-                  </button>
-                  {selectOpen && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                      <div className="py-1">
-                        {["all", "confirmed", "pending", "cancelled"].map((status) => (
-                          <button
-                            key={status}
-                            onClick={() => {
-                              setStatusFilter(status)
-                              setSelectOpen(false)
-                            }}
-                            className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
+        {/* Bookings Display */}
+        {filteredBookings.length === 0 ? (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+            <div className="text-gray-500">
+              <Calendar className="mx-auto h-12 w-12 mb-4 opacity-50" />
+              <h3 className="text-lg font-medium mb-2">No bookings found</h3>
+              <p className="text-sm">
+                {bookings.length === 0
+                  ? "Get started by creating your first booking."
+                  : "Try adjusting your search or filter criteria."}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Booking Details
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Customer
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Service & Date
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredBookings.map((booking) => (
+                      <tr key={booking.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{booking.id}</div>
+                            {booking.fromAddress && (
+                              <div className="text-sm text-gray-500 flex items-center mt-1">
+                                <MapPin className="h-3 w-3 mr-1 flex-shrink-0" />
+                                <span className="truncate max-w-[200px]">{booking.fromAddress}</span>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{booking.customer}</div>
+                            <div className="text-sm text-gray-500">{booking.email}</div>
+                            {booking.phone && (
+                              <div className="text-sm text-gray-500 flex items-center mt-1">
+                                <Phone className="h-3 w-3 mr-1" />
+                                {booking.phone}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{booking.service}</div>
+                            {booking.date && (
+                              <div className="text-sm text-gray-500 flex items-center mt-1">
+                                <Calendar className="h-3 w-3 mr-1" />
+                                {booking.date} {booking.time && `at ${booking.time}`}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}
                           >
-                            {status === "all" ? "All Status" : status.charAt(0).toUpperCase() + status.slice(1)}
-                          </button>
-                        ))}
+                            {booking.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{booking.amount || "—"}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center space-x-2">
+                            <button
+                              onClick={() => setViewingBooking(booking)}
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => setEditingBooking(booking)}
+                              className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteBooking(booking.id)}
+                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden space-y-4">
+              {filteredBookings.map((booking) => (
+                <div key={booking.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="font-medium text-gray-900">{booking.id}</h3>
+                        <p className="text-sm text-gray-600">{booking.customer}</p>
                       </div>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(booking.status)}`}
+                      >
+                        {booking.status}
+                      </span>
                     </div>
-                  )}
+
+                    <div className="space-y-2">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <span className="font-medium w-20">Service:</span>
+                        <span>{booking.service}</span>
+                      </div>
+                      {booking.date && (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Calendar className="h-4 w-4 mr-2" />
+                          <span>
+                            {booking.date} {booking.time && `at ${booking.time}`}
+                          </span>
+                        </div>
+                      )}
+                      {booking.fromAddress && (
+                        <div className="flex items-start text-sm text-gray-600">
+                          <MapPin className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
+                          <span className="break-all">{booking.fromAddress}</span>
+                        </div>
+                      )}
+                      {booking.amount && (
+                        <div className="flex items-center text-sm text-gray-600">
+                          <span className="font-medium w-20">Amount:</span>
+                          <span className="font-medium text-gray-900">{booking.amount}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <hr className="border-gray-200" />
+
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => setViewingBooking(booking)}
+                        className="flex items-center px-3 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        View
+                      </button>
+                      <button
+                        onClick={() => setEditingBooking(booking)}
+                        className="flex items-center px-3 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteBooking(booking.id)}
+                        className="flex items-center px-3 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <button className="px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2">
-                  <Filter className="w-4 h-4" />
-                  More Filters
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Add Booking Modal */}
+        {isAddingBooking && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold text-gray-900">Add New Booking</h2>
+                  <button
+                    onClick={() => {
+                      setIsAddingBooking(false)
+                      resetForm()
+                    }}
+                    className="text-gray-400 hover:text-gray-500"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name *</label>
+                    <input
+                      type="text"
+                      value={formData.customer}
+                      onChange={(e) => setFormData({ ...formData, customer: e.target.value })}
+                      placeholder="Enter customer name"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      placeholder="Enter email address"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      placeholder="Enter phone number"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Service *</label>
+                    <select
+                      value={formData.service}
+                      onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Select service</option>
+                      {services.map((service) => (
+                        <option key={service} value={service}>
+                          {service}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">From Address</label>
+                  <input
+                    type="text"
+                    value={formData.fromAddress}
+                    onChange={(e) => setFormData({ ...formData, fromAddress: e.target.value })}
+                    placeholder="Enter pickup address"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">To Address</label>
+                  <input
+                    type="text"
+                    value={formData.toAddress}
+                    onChange={(e) => setFormData({ ...formData, toAddress: e.target.value })}
+                    placeholder="Enter delivery address"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <input
+                      type="time"
+                      value={formData.time}
+                      onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                    <input
+                      type="text"
+                      value={formData.amount}
+                      onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                      placeholder="£0.00"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                  <textarea
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    placeholder="Additional notes..."
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button
+                  onClick={() => {
+                    setIsAddingBooking(false)
+                    resetForm()
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddBooking}
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Booking
                 </button>
               </div>
             </div>
           </div>
+        )}
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Booking ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Customer
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Service
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date & Time
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Amount
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Guests
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredBookings.map((booking) => (
-                  <tr key={booking.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{booking.id}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{booking.customerName}</div>
-                        <div className="text-sm text-gray-500">{booking.email}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{booking.service}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">{booking.date}</div>
-                        <div className="text-sm text-gray-500">{booking.time}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium gap-1 ${getStatusColor(booking.status)}`}
-                      >
-                        {getStatusIcon(booking.status)}
-                        <span className="capitalize">{booking.status}</span>
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${booking.amount}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center text-sm text-gray-900">
-                        <Users className="w-4 h-4 mr-1 text-gray-400" />
-                        {booking.guests}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="relative">
-                        <button
-                          onClick={() => toggleDropdown(booking.id)}
-                          className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                        </button>
-                        {dropdownOpen === booking.id && (
-                          <div className="absolute right-0 z-10 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200">
-                            <div className="py-1">
-                              <button
-                                onClick={() => {
-                                  setSelectedBooking(booking)
-                                  setDropdownOpen(null)
-                                }}
-                                className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              >
-                                <Eye className="mr-2 h-4 w-4" />
-                                View Details
-                              </button>
-                              {booking.status === "pending" && (
-                                <>
-                                  <button
-                                    onClick={() => handleStatusChange(booking.id, "confirmed")}
-                                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                  >
-                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                    Confirm
-                                  </button>
-                                  <button
-                                    onClick={() => handleStatusChange(booking.id, "cancelled")}
-                                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                  >
-                                    <XCircle className="mr-2 h-4 w-4" />
-                                    Cancel
-                                  </button>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* Booking Details Modal */}
-      {selectedBooking && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75" onClick={() => setSelectedBooking(null)}></div>
-            </div>
-
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-              <div className="bg-white px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">Booking Details - {selectedBooking.id}</h3>
+        {/* View Booking Modal */}
+        {viewingBooking && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold text-gray-900">Booking Details - {viewingBooking.id}</h2>
+                  <button onClick={() => setViewingBooking(null)} className="text-gray-400 hover:text-gray-500">
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
               </div>
-
-              <div className="bg-white px-6 py-6 space-y-6">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <h4 className="font-semibold mb-2 text-gray-900">Customer Information</h4>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <strong>Name:</strong> {selectedBooking.customerName}
-                      </div>
-                      <div>
-                        <strong>Email:</strong> {selectedBooking.email}
-                      </div>
-                    </div>
+                    <label className="block text-sm font-medium text-gray-700">Customer</label>
+                    <p className="mt-1 text-sm text-gray-900">{viewingBooking.customer}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-2 text-gray-900">Booking Status</h4>
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium gap-1 ${getStatusColor(selectedBooking.status)}`}
-                    >
-                      {getStatusIcon(selectedBooking.status)}
-                      <span className="capitalize">{selectedBooking.status}</span>
-                    </span>
+                    <label className="block text-sm font-medium text-gray-700">Service</label>
+                    <p className="mt-1 text-sm text-gray-900">{viewingBooking.service}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Email</label>
+                    <p className="mt-1 text-sm text-gray-900">{viewingBooking.email}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Phone</label>
+                    <p className="mt-1 text-sm text-gray-900">{viewingBooking.phone || "—"}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Date & Time</label>
+                    <p className="mt-1 text-sm text-gray-900">
+                      {viewingBooking.date || "—"} {viewingBooking.time && `at ${viewingBooking.time}`}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Amount</label>
+                    <p className="mt-1 text-sm text-gray-900">{viewingBooking.amount || "—"}</p>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <h4 className="font-semibold mb-2 text-gray-900">Service Details</h4>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <strong>Service:</strong> {selectedBooking.service}
-                      </div>
-                      <div>
-                        <strong>Date:</strong> {selectedBooking.date}
-                      </div>
-                      <div>
-                        <strong>Time:</strong> {selectedBooking.time}
-                      </div>
-                      <div>
-                        <strong>Duration:</strong> {selectedBooking.duration}
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2 text-gray-900">Additional Info</h4>
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <strong>Guests:</strong> {selectedBooking.guests}
-                      </div>
-                      <div>
-                        <strong>Amount:</strong> ${selectedBooking.amount}
-                      </div>
-                    </div>
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">From Address</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingBooking.fromAddress || "—"}</p>
                 </div>
-
-                {selectedBooking.notes && (
-                  <div>
-                    <h4 className="font-semibold mb-2 text-gray-900">Notes</h4>
-                    <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">{selectedBooking.notes}</p>
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">To Address</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingBooking.toAddress || "—"}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Notes</label>
+                  <p className="mt-1 text-sm text-gray-900">{viewingBooking.notes || "—"}</p>
+                </div>
               </div>
-
-              <div className="bg-gray-50 px-6 py-4 flex justify-end gap-2 border-t border-gray-200">
-                {selectedBooking.status === "pending" && (
-                  <>
-                    <button
-                      onClick={() => handleStatusChange(selectedBooking.id, "cancelled")}
-                      className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-2"
-                    >
-                      <XCircle className="w-4 h-4" />
-                      Cancel Booking
-                    </button>
-                    <button
-                      onClick={() => handleStatusChange(selectedBooking.id, "confirmed")}
-                      className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                      Confirm Booking
-                    </button>
-                  </>
-                )}
+              <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
                 <button
-                  onClick={() => setSelectedBooking(null)}
-                  className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
+                  onClick={() => setViewingBooking(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                 >
                   Close
                 </button>
+                <button
+                  onClick={() => {
+                    setEditingBooking(viewingBooking)
+                    setViewingBooking(null)
+                  }}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Edit Booking
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Click outside to close dropdowns */}
-      {(dropdownOpen || selectOpen) && (
-        <div
-          className="fixed inset-0 z-10"
-          onClick={() => {
-            setDropdownOpen(null)
-            setSelectOpen(false)
-          }}
-        />
-      )}
+        {/* Edit Booking Modal */}
+        {editingBooking && (
+          <div className="fixed inset-0 z-50 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold text-gray-900">Edit Booking - {editingBooking.id}</h2>
+                  <button onClick={() => setEditingBooking(null)} className="text-gray-400 hover:text-gray-500">
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                    <input
+                      type="text"
+                      value={editingBooking.customer}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, customer: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input
+                      type="email"
+                      value={editingBooking.email}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, email: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input
+                      type="tel"
+                      value={editingBooking.phone}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, phone: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Service</label>
+                    <select
+                      value={editingBooking.service}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, service: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      {services.map((service) => (
+                        <option key={service} value={service}>
+                          {service}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">From Address</label>
+                  <input
+                    type="text"
+                    value={editingBooking.fromAddress}
+                    onChange={(e) => setEditingBooking({ ...editingBooking, fromAddress: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">To Address</label>
+                  <input
+                    type="text"
+                    value={editingBooking.toAddress}
+                    onChange={(e) => setEditingBooking({ ...editingBooking, toAddress: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input
+                      type="date"
+                      value={editingBooking.date}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, date: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <input
+                      type="time"
+                      value={editingBooking.time}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, time: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select
+                      value={editingBooking.status}
+                      onChange={(e) =>
+                        setEditingBooking({ ...editingBooking, status: e.target.value as Booking["status"] })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Confirmed">Confirmed</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                    <input
+                      type="text"
+                      value={editingBooking.amount}
+                      onChange={(e) => setEditingBooking({ ...editingBooking, amount: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                  <textarea
+                    value={editingBooking.notes}
+                    onChange={(e) => setEditingBooking({ ...editingBooking, notes: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
+                <button
+                  onClick={() => setEditingBooking(null)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleEditBooking}
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

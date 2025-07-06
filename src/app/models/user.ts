@@ -1,17 +1,16 @@
-// src/models/User.ts
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose'
 
 const userSchema = new Schema(
   {
     name: String,
     email: { type: String, unique: true },
     image: String,
-    googleId: { type: String, unique: true }, // Google account ID
-    role: { type: String, enum: ["user", "admin"], default: "user" }, // User role
+    googleId: { type: String, unique: true },
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
   },
   { timestamps: true }
-);
+)
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
+const User = mongoose.models.User || mongoose.model('User', userSchema)
 
-export default User;
+export default User

@@ -1,11 +1,13 @@
-import { Sidebar } from 'lucide-react'
-import React from 'react'
+import { auth } from '@/auth'
+import { redirect } from 'next/navigation'
+import { AdminDashboard } from '../../../components/admin-dashboard'
 
+export default async function AdminPage() {
+  const session = await auth()
 
-export default function page() {
-  return (
-    <div>
-    
-    </div>
-  )
+  if (!session || session.user?.role !== 'admin') {
+    redirect('/forbidden')
+  }
+
+  return <AdminDashboard />
 }

@@ -315,7 +315,7 @@ export function ServiceManagement() {
   )
 }
 
-// Service Modal Component
+// Enhanced Service Modal Component with Sub-Service Management
 function ServiceModal({
   service,
   onClose,
@@ -333,8 +333,109 @@ function ServiceModal({
     category: service?.category || "",
     isActive: service?.isActive ?? true,
   })
+
+  // Sub-services state
+  const [subServices, setSubServices] = useState<SubService[]>([])
+  const [newSubService, setNewSubService] = useState({
+    name: "",
+    description: "",
+    price: "",
+    priceType: "fixed",
+    estimatedDuration: "",
+    features: "",
+    isActive: true,
+  })
+  const [editingSubServiceIndex, setEditingSubServiceIndex] = useState<number | null>(null)
+  const [showSubServiceForm, setShowSubServiceForm] = useState(false)
+
   const [loading, setLoading] = useState(false)
+  const [loadingSubServices, setLoadingSubServices] = useState(false)
   const { toast } = useToast()
+
+  // Load existing sub-services if editing a service
+  useEffect(() => {
+    if (service?._id) {
+      fetchExistingSubServices(service._id)
+    }
+  }, [service])
+
+  const fetchExistingSubServices = async (serviceId: string) => {
+    try {
+      setLoadingSubServices(true)
+      const response = await fetch(`/api/admin/services/${serviceId}/sub-services`)
+      if (response.ok) {
+        const data = await response.json()
+        setSubServices(data.subServices)
+      }
+    } catch (error) {
+      console.error("Error fetching sub-services:", error)
+    } finally {
+      setLoadingSubServices(false)
+    }
+  }
+
+  const handleAddSubService = () => {
+    if (!newSubService.name || !newSubService.description || !newSubService.price) {
+      toast({ title: "Error", description: "Please fill in all required sub-service fields", variant: "destructive" })
+      return
+    }
+
+    const subServiceToAdd = {
+      ...newSubService,
+      _id: `temp-${Date.now()}`, // Temporary ID for new sub-services
+      serviceId: service?._id || "new",
+      price: Number(newSubService.price),
+      features: newSubService.features
+        .split(",")
+        .map((f) => f.trim())
+        .filter((f) => f),
+    }
+
+    if (editingSubServiceIndex !== null) {
+      // Update existing sub-service
+      const updatedSubServices = [...subServices]
+      updatedSubServices[editingSubServiceIndex] = subServiceToAdd
+      setSubServices(updatedSubServices)
+      setEditingSubServiceIndex(null)
+    } else {
+      // Add new sub-service
+      setSubServices([...subServices, subServiceToAdd])
+    }
+
+    // Reset form
+    setNewSubService({
+      name: "",
+      description: "",
+      price: "",
+      priceType: "fixed",
+      estimatedDuration: "",
+      features: "",
+      isActive: true,
+    })
+    setShowSubServiceForm(false)
+  }
+
+  const handleEditSubService = (index: number) => {
+    const subService = subServices[index]
+    setNewSubService({
+      name: subService.name,
+      description: subService.description,
+      price: subService.price.toString(),
+      priceType: subService.priceType,
+      estimatedDuration: subService.estimatedDuration || "",
+      features: subService.features.join(", "),
+      isActive: subService.isActive,
+    })
+    setEditingSubServiceIndex(index)
+    setShowSubServiceForm(true)
+  }
+
+  const handleDeleteSubService = (index: number) => {
+    if (confirm("Are you sure you want to delete this sub-service?")) {
+      const updatedSubServices = subServices.filter((_, i) => i !== index)
+      setSubServices(updatedSubServices)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -344,7 +445,8 @@ function ServiceModal({
       const url = service ? `/api/admin/services/${service._id}` : "/api/admin/services"
       const method = service ? "PUT" : "POST"
 
-      const response = await fetch(url, {
+      // First, save the service
+      const serviceResponse = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -353,96 +455,351 @@ function ServiceModal({
         }),
       })
 
-      const data = await response.json()
+      const serviceData = await serviceResponse.json()
 
-      if (response.ok) {
-        toast({ title: "Success", description: `Service ${service ? "updated" : "created"} successfully` })
-        onSave(data.service)
-      } else {
-        toast({ title: "Error", description: data.error, variant: "destructive" })
+      if (!serviceResponse.ok) {
+        throw new Error(serviceData.error)
       }
+
+      const savedService = serviceData.service
+
+      // Then, handle sub-services
+      if (subServices.length > 0) {
+        await handleSubServicesUpdate(savedService._id)
+      }
+
+      toast({ title: "Success", description: `Service ${service ? "updated" : "created"} successfully` })
+      onSave(savedService)
     } catch (error) {
-      toast({ title: "Error", description: "An unexpected error occurred", variant: "destructive" })
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }
   }
 
+  const handleSubServicesUpdate = async (serviceId: string) => {
+    try {
+      // Delete existing sub-services if editing
+      if (service?._id) {
+        const existingSubServices = await fetch(`/api/admin/services/${serviceId}/sub-services`)
+        if (existingSubServices.ok) {
+          const existingData = await existingSubServices.json()
+          for (const existingSub of existingData.subServices) {
+            if (!subServices.find((sub) => sub._id === existingSub._id)) {
+              await fetch(`/api/admin/sub-services/${existingSub._id}`, { method: "DELETE" })
+            }
+          }
+        }
+      }
+
+      // Create/update sub-services
+      for (const subService of subServices) {
+        const subServiceData = {
+          name: subService.name,
+          description: subService.description,
+          price: subService.price,
+          priceType: subService.priceType,
+          estimatedDuration: subService.estimatedDuration,
+          features: subService.features,
+          isActive: subService.isActive,
+        }
+
+        if (subService._id.startsWith("temp-")) {
+          // Create new sub-service
+          await fetch(`/api/admin/services/${serviceId}/sub-services`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(subServiceData),
+          })
+        } else {
+          // Update existing sub-service
+          await fetch(`/api/admin/sub-services/${subService._id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(subServiceData),
+          })
+        }
+      }
+    } catch (error) {
+      console.error("Error handling sub-services:", error)
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <div className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg font-semibold mb-4">{service ? "Edit Service" : "Add New Service"}</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Service Name</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={3}
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-            <input
-              type="text"
-              value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., Moving, Cleaning, Removal"
-              required
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Base Price (Optional)</label>
-              <input
-                type="number"
-                value={formData.basePrice}
-                onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                min="0"
-                step="0.01"
-              />
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Service Details */}
+          <div className="border rounded-lg p-4">
+            <h4 className="text-md font-semibold mb-4 text-gray-800">Service Information</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Service Name *</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                <input
+                  type="text"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., Moving, Cleaning, Removal"
+                  required
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description *</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Base Price (Optional)</label>
+                <input
+                  type="number"
+                  value={formData.basePrice}
+                  onChange={(e) => setFormData({ ...formData, basePrice: e.target.value })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Price Type</label>
+                <select
+                  value={formData.priceType}
+                  onChange={(e) => setFormData({ ...formData, priceType: e.target.value })}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="custom">Custom</option>
+                  <option value="fixed">Fixed</option>
+                  <option value="hourly">Hourly</option>
+                  <option value="per_item">Per Item</option>
+                </select>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="isActive"
+                  checked={formData.isActive}
+                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  className="mr-2"
+                />
+                <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
+                  Active
+                </label>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Price Type</label>
-              <select
-                value={formData.priceType}
-                onChange={(e) => setFormData({ ...formData, priceType: e.target.value })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          </div>
+
+          {/* Sub-Services Section */}
+          <div className="border rounded-lg p-4">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="text-md font-semibold text-gray-800">Sub-Services</h4>
+              <button
+                type="button"
+                onClick={() => setShowSubServiceForm(!showSubServiceForm)}
+                className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
               >
-                <option value="custom">Custom</option>
-                <option value="fixed">Fixed</option>
-                <option value="hourly">Hourly</option>
-                <option value="per_item">Per Item</option>
-              </select>
+                {showSubServiceForm ? "Cancel" : "Add Sub-Service"}
+              </button>
             </div>
+
+            {/* Sub-Service Form */}
+            {showSubServiceForm && (
+              <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                <h5 className="text-sm font-semibold mb-3 text-gray-700">
+                  {editingSubServiceIndex !== null ? "Edit Sub-Service" : "Add New Sub-Service"}
+                </h5>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Name *</label>
+                    <input
+                      type="text"
+                      value={newSubService.name}
+                      onChange={(e) => setNewSubService({ ...newSubService, name: e.target.value })}
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      placeholder="Sub-service name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Price *</label>
+                    <input
+                      type="number"
+                      value={newSubService.price}
+                      onChange={(e) => setNewSubService({ ...newSubService, price: e.target.value })}
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Price Type *</label>
+                    <select
+                      value={newSubService.priceType}
+                      onChange={(e) => setNewSubService({ ...newSubService, priceType: e.target.value })}
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    >
+                      <option value="fixed">Fixed</option>
+                      <option value="hourly">Hourly</option>
+                      <option value="per_item">Per Item</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Duration</label>
+                    <input
+                      type="text"
+                      value={newSubService.estimatedDuration}
+                      onChange={(e) => setNewSubService({ ...newSubService, estimatedDuration: e.target.value })}
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      placeholder="e.g., 2-4 hours"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Description *</label>
+                    <textarea
+                      value={newSubService.description}
+                      onChange={(e) => setNewSubService({ ...newSubService, description: e.target.value })}
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      rows={2}
+                      placeholder="Describe this sub-service"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-medium text-gray-600 mb-1">Features (comma-separated)</label>
+                    <input
+                      type="text"
+                      value={newSubService.features}
+                      onChange={(e) => setNewSubService({ ...newSubService, features: e.target.value })}
+                      className="w-full border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      placeholder="Feature 1, Feature 2, Feature 3"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="subServiceActive"
+                      checked={newSubService.isActive}
+                      onChange={(e) => setNewSubService({ ...newSubService, isActive: e.target.checked })}
+                      className="mr-2"
+                    />
+                    <label htmlFor="subServiceActive" className="text-xs font-medium text-gray-600">
+                      Active
+                    </label>
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2 mt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowSubServiceForm(false)
+                      setEditingSubServiceIndex(null)
+                      setNewSubService({
+                        name: "",
+                        description: "",
+                        price: "",
+                        priceType: "fixed",
+                        estimatedDuration: "",
+                        features: "",
+                        isActive: true,
+                      })
+                    }}
+                    className="px-3 py-1 text-xs bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddSubService}
+                    className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+                  >
+                    {editingSubServiceIndex !== null ? "Update" : "Add"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Sub-Services List */}
+            {loadingSubServices ? (
+              <div className="text-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {subServices.map((subService, index) => (
+                  <div key={subService._id} className="flex items-center justify-between p-3 bg-gray-50 rounded border">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h6 className="font-medium text-sm text-gray-900">{subService.name}</h6>
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                          ${subService.price} ({subService.priceType})
+                        </span>
+                        <span
+                          className={`text-xs px-2 py-1 rounded ${
+                            subService.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {subService.isActive ? "Active" : "Inactive"}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-600 mt-1">{subService.description}</p>
+                      {subService.features.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {subService.features.map((feature, idx) => (
+                            <span key={idx} className="text-xs bg-blue-100 text-blue-800 px-1 py-0.5 rounded">
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex space-x-1">
+                      <button
+                        type="button"
+                        onClick={() => handleEditSubService(index)}
+                        className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteSubService(index)}
+                        className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                {subServices.length === 0 && (
+                  <p className="text-sm text-gray-500 text-center py-4">
+                    No sub-services added yet. Click "Add Sub-Service" to get started.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="isActive"
-              checked={formData.isActive}
-              onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-              className="mr-2"
-            />
-            <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
-              Active
-            </label>
-          </div>
-          <div className="flex justify-end space-x-3 pt-4">
+
+          {/* Submit Buttons */}
+          <div className="flex justify-end space-x-3 pt-4 border-t">
             <button
               type="button"
               onClick={onClose}
@@ -455,7 +812,7 @@ function ServiceModal({
               disabled={loading}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
-              {loading ? "Saving..." : service ? "Update" : "Create"}
+              {loading ? "Saving..." : service ? "Update Service" : "Create Service"}
             </button>
           </div>
         </form>

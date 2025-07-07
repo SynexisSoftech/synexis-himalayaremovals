@@ -38,7 +38,8 @@ export default function BookingSection() {
     phoneNumber: '',
     serviceId: '',
     subServiceId: '',
-    selectedType: 'service' as 'service' | 'subservice', // Track what user selected
+    selectedType: 'service' as 'service' | 'subservice',
+    details: '', // Add this new field
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -229,6 +230,11 @@ export default function BookingSection() {
         missingFields.push('main service selection')
       }
 
+      // Check if details are provided (required)
+      if (!formData.details.trim()) {
+        missingFields.push('service details')
+      }
+
       if (missingFields.length > 0) {
         throw new Error(
           `Please fill in all required fields: ${missingFields.join(', ')}`
@@ -285,14 +291,18 @@ export default function BookingSection() {
           selectedSubService
             ? `${selectedSubService.name} (${selectedSubService.serviceName})`
             : selectedService?.name || 'information'
-        }. Contact details: Name: ${formData.fullName.trim()}, Email: ${formData.emailAddress.trim()}, Phone: ${formData.phoneNumber.trim()}`,
+        }. Contact details: Name: ${formData.fullName.trim()}, Email: ${formData.emailAddress.trim()}, Phone: ${formData.phoneNumber.trim()}. 
+
+Customer Details: ${
+          formData.details.trim() || 'No additional details provided.'
+        }`, // Updated notes to include details
         status: 'pending',
         submittedAt: new Date().toISOString(),
       }
 
       console.log('Submitting booking data:', bookingData)
 
-      const response = await fetch('/api/bookings', {
+      const response = await fetch('/api/booking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -326,6 +336,7 @@ export default function BookingSection() {
           serviceId: '',
           subServiceId: '',
           selectedType: 'service',
+          details: '', // Add this to the reset
         })
         setSubmitStatus('idle')
         setSubmitMessage('')
@@ -645,7 +656,7 @@ export default function BookingSection() {
                                     (s) => s._id === formData.serviceId
                                   )?.name
                                 }
-                                " or skip to discuss directly
+                                "
                               </p>
                             </div>
                           </div>
@@ -829,69 +840,59 @@ export default function BookingSection() {
                                   </p>
                                 </div>
                               )}
-
-                              {/* Skip Option - Always show when main service is selected */}
-                              <div className='flex justify-center'>
-                                <div
-                                  onClick={() =>
-                                    setFormData((prev) => ({
-                                      ...prev,
-                                      subServiceId: '',
-                                      selectedType: 'service',
-                                    }))
-                                  }
-                                  className={`cursor-pointer p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-md max-w-md w-full ${
-                                    formData.subServiceId === ''
-                                      ? 'border-gray-500 bg-gray-100 shadow-md'
-                                      : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50'
-                                  }`}
-                                >
-                                  <div className='text-center'>
-                                    <div className='flex items-center justify-center mb-2'>
-                                      <svg
-                                        className='w-5 h-5 text-gray-600 mr-2'
-                                        fill='none'
-                                        stroke='currentColor'
-                                        viewBox='0 0 24 24'
-                                      >
-                                        <path
-                                          strokeLinecap='round'
-                                          strokeLinejoin='round'
-                                          strokeWidth={2}
-                                          d='M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'
-                                        />
-                                      </svg>
-                                      <h5 className='font-semibold text-gray-800'>
-                                        Discuss My Needs
-                                      </h5>
-                                    </div>
-                                    <p className='text-sm text-gray-600 mb-2'>
-                                      Skip specific selection - I'll discuss my
-                                      requirements directly
-                                    </p>
-                                    {formData.subServiceId === '' && (
-                                      <div className='flex items-center justify-center text-gray-600'>
-                                        <svg
-                                          className='w-4 h-4 mr-1'
-                                          fill='currentColor'
-                                          viewBox='0 0 20 20'
-                                        >
-                                          <path
-                                            fillRule='evenodd'
-                                            d='M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
-                                            clipRule='evenodd'
-                                          />
-                                        </svg>
-                                        <span className='text-sm font-medium'>
-                                          Selected
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
                             </>
                           )}
+                        </div>
+                      )}
+
+                      {/* Step 3: Write in Details Section */}
+                      {formData.serviceId && (
+                        <div className='mb-8'>
+                          <div className='flex items-center mb-4'>
+                            <div className='flex items-center justify-center w-8 h-8 bg-purple-500 text-white rounded-full text-sm font-bold mr-3'>
+                              3
+                            </div>
+                            <div>
+                              <h4 className='text-lg sm:text-xl font-bold text-gray-800'>
+                                Write in Details
+                              </h4>
+                              <p className='text-sm text-gray-600'>
+                                Please describe your specific needs,
+                                requirements, or any special instructions for
+                                the admin
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className='bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200'>
+                            <label
+                              htmlFor='details'
+                              className='block text-sm font-medium text-gray-700 mb-3'
+                            >
+                              Describe Your Requirements *
+                            </label>
+                            <textarea
+                              id='details'
+                              name='details'
+                              required
+                              value={formData.details}
+                              onChange={handleInputChange}
+                              rows={6}
+                              className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none text-sm sm:text-base'
+                              placeholder='Please provide detailed information about:
+• What specific service you need
+• Location details (pickup/delivery addresses)
+• Timeline or preferred dates
+• Special requirements or fragile items
+• Access restrictions (stairs, elevators, parking)
+• Any other important details the admin should know...'
+                            />
+                            <div className='mt-2 text-xs text-gray-500'>
+                              <span className='font-medium'>Tip:</span> The more
+                              details you provide, the more accurate quote we
+                              can give you.
+                            </div>
+                          </div>
                         </div>
                       )}
 
@@ -908,85 +909,6 @@ export default function BookingSection() {
                       )}
                     </>
                   )}
-
-                  {/* Selected Service Summary */}
-                  {formData.serviceId && (
-                    <div className='mt-8 bg-gradient-to-r from-teal-50 to-orange-50 rounded-lg p-4 sm:p-6 border border-teal-200'>
-                      <h4 className='text-base sm:text-lg font-semibold text-gray-800 mb-3'>
-                        Your Selection Summary
-                      </h4>
-                      <div className='space-y-2 text-sm sm:text-base'>
-                        <div className='flex items-center justify-between'>
-                          <span className='font-medium text-gray-700'>
-                            Main Service:
-                          </span>
-                          <span className='text-gray-900'>
-                            {
-                              services.find((s) => s._id === formData.serviceId)
-                                ?.name
-                            }
-                          </span>
-                        </div>
-                        <div className='flex items-center justify-between'>
-                          <span className='font-medium text-gray-700'>
-                            Category:
-                          </span>
-                          <span className='text-gray-900'>
-                            {
-                              services.find((s) => s._id === formData.serviceId)
-                                ?.category
-                            }
-                          </span>
-                        </div>
-                        {formData.subServiceId ? (
-                          <>
-                            <div className='border-t border-teal-200 pt-2 mt-3'>
-                              <div className='flex items-center justify-between'>
-                                <span className='font-medium text-gray-700'>
-                                  Specific Service:
-                                </span>
-                                <span className='text-gray-900'>
-                                  {
-                                    allSubServices.find(
-                                      (s) => s._id === formData.subServiceId
-                                    )?.name
-                                  }
-                                </span>
-                              </div>
-                              <div className='flex items-center justify-between'>
-                                <span className='font-medium text-gray-700'>
-                                  Price:
-                                </span>
-                                <span className='text-green-600 font-semibold'>
-                                  $
-                                  {
-                                    allSubServices.find(
-                                      (s) => s._id === formData.subServiceId
-                                    )?.price
-                                  }{' '}
-                                  (
-                                  {
-                                    allSubServices.find(
-                                      (s) => s._id === formData.subServiceId
-                                    )?.priceType
-                                  }
-                                  )
-                                </span>
-                              </div>
-                            </div>
-                          </>
-                        ) : (
-                          <div className='border-t border-teal-200 pt-2 mt-3'>
-                            <div className='text-sm text-gray-600'>
-                              <span className='font-medium'>Selection:</span>{' '}
-                              General service inquiry - We'll discuss specific
-                              details and pricing with you directly.
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -998,13 +920,25 @@ export default function BookingSection() {
                     isSubmitting ||
                     isLoadingServices ||
                     !!serviceError ||
-                    !formData.serviceId // Only require main service selection
+                    !formData.serviceId ||
+                    !formData.details.trim() ||
+                    (formData.serviceId &&
+                      allSubServices.filter(
+                        (ss) => ss.serviceId === formData.serviceId
+                      ).length > 0 &&
+                      !formData.subServiceId)
                   }
                   className={`w-full px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base ${
                     isSubmitting ||
                     isLoadingServices ||
                     !!serviceError ||
-                    !formData.serviceId // Only require main service selection
+                    !formData.serviceId ||
+                    !formData.details.trim() ||
+                    (formData.serviceId &&
+                      allSubServices.filter(
+                        (ss) => ss.serviceId === formData.serviceId
+                      ).length > 0 &&
+                      !formData.subServiceId)
                       ? 'bg-gray-400 cursor-not-allowed text-white'
                       : 'bg-gradient-to-r from-teal-500 to-teal-600 text-white hover:from-teal-600 hover:to-teal-700'
                   }`}

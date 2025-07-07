@@ -4,25 +4,32 @@ import { connectToDatabase } from "@/app/lib/mongodb"
 import Service from "@/app/models/service"
 import SubService from "@/app/models/sub-service"
 
-export async function PUT(request: NextRequest, { params }: { params: { serviceId: string } }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ serviceId: string }> }
+) {
   try {
     const session = await auth()
-    if (!session || session.user?.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!session || session.user?.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { name, description, basePrice, priceType, category, isActive } = await request.json()
+    // Await params before accessing properties
+    const { serviceId } = await params
+
+    const { name, description, basePrice, priceType, category, isActive } =
+      await request.json()
 
     await connectToDatabase()
 
     const service = await Service.findByIdAndUpdate(
-      params.serviceId,
+      serviceId,
       { name, description, basePrice, priceType, category, isActive },
-      { new: true },
+      { new: true }
     )
 
     if (!service) {
-      return NextResponse.json({ error: "Service not found" }, { status: 404 })
+      return NextResponse.json({ error: 'Service not found' }, { status: 404 })
     }
 
     return NextResponse.json({
@@ -38,33 +45,48 @@ export async function PUT(request: NextRequest, { params }: { params: { serviceI
       },
     })
   } catch (error) {
-    console.error("Error updating service:", error)
-    return NextResponse.json({ error: "Failed to update service" }, { status: 500 })
+    console.error('Error updating service:', error)
+    return NextResponse.json(
+      { error: 'Failed to update service' },
+      { status: 500 }
+    )
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { serviceId: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ serviceId: string }> }
+) {
   try {
     const session = await auth()
-    if (!session || session.user?.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (!session || session.user?.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    // Await params before accessing properties
+    const { serviceId } = await params
 
     await connectToDatabase()
 
     // Delete all sub-services first
-    await SubService.deleteMany({ serviceId: params.serviceId })
+    await SubService.deleteMany({ serviceId })
 
     // Delete the service
-    const service = await Service.findByIdAndDelete(params.serviceId)
+    const service = await Service.findByIdAndDelete(serviceId)
 
     if (!service) {
-      return NextResponse.json({ error: "Service not found" }, { status: 404 })
+      return NextResponse.json({ error: 'Service not found' }, { status: 404 })
     }
 
-    return NextResponse.json({ success: true, message: "Service deleted successfully" })
+    return NextResponse.json({
+      success: true,
+      message: 'Service deleted successfully',
+    })
   } catch (error) {
-    console.error("Error deleting service:", error)
-    return NextResponse.json({ error: "Failed to delete service" }, { status: 500 })
+    console.error('Error deleting service:', error)
+    return NextResponse.json(
+      { error: 'Failed to delete service' },
+      { status: 500 }
+    )
   }
 }

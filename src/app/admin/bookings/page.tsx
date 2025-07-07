@@ -1,24 +1,25 @@
-import { auth } from '@/auth'
-import { redirect } from 'next/navigation'
-import { BookingManagement } from '../../../../components/booking-management'
+'use client'
 
-export default async function BookingsPage() {
-  const session = await auth()
+import { BookingStats } from '../../../../components/booking-stats'
+import { BookingsManager } from '../../../../components/bookings-manager'
+import { ToastProvider } from '../../../../components/toast'
 
-  if (!session || session.user?.role !== 'admin') {
-    redirect('/forbidden')
-  }
-
+export default function BookingsPage() {
   return (
-    <div className='max-w-7xl mx-auto p-6'>
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900'>Booking Management</h1>
-        <p className='text-gray-600 mt-2'>
-          Manage customer booking requests and track service status
-        </p>
-      </div>
+    <ToastProvider>
+      <div className='container mx-auto px-4 py-8'>
+        <div className='mb-8'>
+          <h1 className='text-3xl font-bold text-gray-900'>
+            Booking Management
+          </h1>
+          <p className='text-gray-600 mt-2'>
+            Manage and track all customer bookings
+          </p>
+        </div>
 
-      <BookingManagement />
-    </div>
+        <BookingStats />
+        <BookingsManager />
+      </div>
+    </ToastProvider>
   )
 }

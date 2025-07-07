@@ -1,82 +1,50 @@
-import mongoose from "mongoose"
+import mongoose, { Schema, type Document } from 'mongoose'
 
-export enum ServiceType {
-  HOUSEHOLD_MOVING = "Household Moving",
-  OFFICE_COMMERCIAL_MOVING = "Office/Commercial Moving",
-  PACKING_ONLY = "Packing",
-  STORAGE_SERVICE = "Storage",
+export interface IBooking extends Document {
+  bookingId: string
+  fullName: string
+  emailAddress: string
+  phoneNumber: string
+  serviceId: string
+  serviceName: string
+  subServiceId?: string
+  subServiceName?: string
+  subServicePrice?: number
+  details: string // Keep as 'details' to match your existing database
+  status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
+  submittedAt: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
-export enum PreferredTime {
-  MORNING = "Morning(8:00 A.M-12:00 P.M)",
-  AFTERNOON = "Afternoon(12:00 P.M-5:00 P.M)",
-  EVENING = "Evening(5:00 P.M-8:00 P.M)",
-}
-
-export enum ProperSize {
-  STUDIO = "1 Studio",
-  ONE_BEDROOM = "1 Bedroom",
-  TWO_BEDROOM = "2 Bedrooms",
-  THREE_BEDROOM = "3 Bedrooms",
-  FOUR_BEDROOM = "4+ Bedrooms",
-  OFFICE_SPACE = "Office Space",
-}
-
-export enum EstimatedWeight {
-  LIGHT = "Light Under 500kg ",
-  MEDIUM = "Medium 500kg-1000kg",
-  HEAVY = "Heavy Over 1000kg",
-  VERY_HEAVY = " Very Heavy Over 2000kg",
-}
-
-export enum AdditionalService {
-  PACKING = "Packing materials included",
-  FURNITURE_DISMANTLING = "Furniture dismantling included",
-  STORAGE_SERVICE = "Storage Service",
-  INSURANCE = "Insurance Coverage",
-  CLEANING_SERVICES = "Cleaning Services",
-  PIANO = "Piano/special item moving",
-}
-
-const bookingSchema = new mongoose.Schema(
+const bookingSchema = new Schema(
   {
-    fullName: { type: String, required: true },
-    emailAddress: { type: String, required: true },
-    phoneNumber: { type: String, required: true }, // Changed from Number to String
-    serviceType: {
+    bookingId: { type: String, required: true, unique: true },
+    fullName: { type: String, required: true, trim: true },
+    emailAddress: { type: String, required: true, trim: true, lowercase: true },
+    phoneNumber: { type: String, required: true, trim: true },
+    serviceId: { type: String, required: true },
+    serviceName: { type: String, required: true },
+    subServiceId: { type: String },
+    subServiceName: { type: String },
+    subServicePrice: { type: Number, min: 0 },
+    details: { type: String, required: true, trim: true }, // Keep as 'details'
+    status: {
       type: String,
-      enum: Object.values(ServiceType),
-      required: true,
+      enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'],
+      default: 'pending',
     },
-    fromLocation: { type: String, required: true },
-    toLocation: { type: String, required: true },
-    preferredMovingdate: { type: Date, required: true }, // Changed from Number to Date
-    preferredTime: {
-      type: String,
-      enum: Object.values(PreferredTime),
-      required: true,
-    },
-    ProperSize: {
-      type: String,
-      enum: Object.values(ProperSize),
-      required: true,
-    },
-    EstimatedWeight: {
-      type: String,
-      enum: Object.values(EstimatedWeight),
-      required: true,
-    },
-    SpecialRequirement: { type: String, required: true },
-    AdditionalService: {
-      type: String,
-      enum: Object.values(AdditionalService),
-      required: true,
-    },
+    submittedAt: { type: Date, required: true },
   },
-  {
-    timestamps: true, // This will add createdAt and updatedAt fields
-  },
+  { timestamps: true }
 )
 
-const Booking = mongoose.models.Booking || mongoose.model("Booking", bookingSchema)
+bookingSchema.index({ bookingId: 1 }, { unique: true })
+bookingSchema.index({ status: 1 })
+bookingSchema.index({ submittedAt: -1 })
+bookingSchema.index({ emailAddress: 1 })
+
+const Booking =
+  mongoose.models.Booking || mongoose.model<IBooking>('Booking', bookingSchema)
+
 export default Booking

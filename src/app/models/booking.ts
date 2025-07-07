@@ -10,8 +10,8 @@ export interface IBooking extends Document {
   subServiceId?: string
   subServiceName?: string
   subServicePrice?: number
-  notes: string // ← Changed from 'details' to 'notes'
-  status: "pending" | "confirmed" | "in_progress" | "completed" | "cancelled"
+  details: string
+  status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled'
   submittedAt: Date
   createdAt: Date
   updatedAt: Date
@@ -28,19 +28,26 @@ const bookingSchema = new Schema(
     subServiceId: { type: String },
     subServiceName: { type: String },
     subServicePrice: { type: Number, min: 0 },
-    notes: { type: String, required: true, trim: true }, // ← Changed from 'details' to 'notes'
+    details: { type: String, required: true, trim: true },
     status: {
       type: String,
-      enum: ["pending", "confirmed", "in_progress", "completed", "cancelled"],
-      default: "pending",
+      enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'],
+      default: 'pending',
     },
     submittedAt: { type: Date, required: true },
   },
-  { timestamps: true },
+  { timestamps: true }
 )
 
+// Remove these duplicate index lines:
+// bookingSchema.index({ bookingId: 1 })
+// bookingSchema.index({ emailAddress: 1 })
+// bookingSchema.index({ status: 1 })
+// bookingSchema.index({ createdAt: -1 })
+
+// Replace with just the essential unique index:
 bookingSchema.index({ bookingId: 1 }, { unique: true })
 
-const Booking = mongoose.models.Booking || mongoose.model<IBooking>("Booking", bookingSchema)
-
+const Booking =
+  mongoose.models.Booking || mongoose.model<IBooking>('Booking', bookingSchema)
 export default Booking

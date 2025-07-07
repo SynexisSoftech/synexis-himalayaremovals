@@ -114,6 +114,7 @@ export function SimpleBookingForm() {
         subServiceName: selectedSubService?.name,
         subServicePrice: selectedSubService?.price,
         bookingId: `BK-${Date.now()}`,
+        status: "pending", // Explicitly set status
         submittedAt: new Date().toISOString(),
       }
 

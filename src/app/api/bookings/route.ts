@@ -1,7 +1,16 @@
-import { NextResponse } from 'next/server'
-import { auth } from '@/auth'
-import { connectToDatabase } from '@/app/lib/mongodb'
-import Booking from '@/app/models/booking'
+import { NextResponse } from "next/server"
+import { auth } from "@/auth"
+import { connectToDatabase } from "@/app/lib/mongodb"
+import Booking from "@/app/models/booking"
+
+// Helper function to safely convert date to ISO string
+const safeToISOString = (date: any): string => {
+  if (!date) return new Date().toISOString()
+  if (date instanceof Date) return date.toISOString()
+  if (typeof date === "string") return new Date(date).toISOString()
+  if (date.$date) return new Date(date.$date).toISOString()
+  return new Date().toISOString()
+}
 
 // POST - Create a new booking (public endpoint)
 export async function POST(request: Request) {
@@ -19,8 +28,7 @@ export async function POST(request: Request) {
       subServiceId,
       subServiceName,
       subServicePrice,
-      details, // ← Accept both 'details' and 'notes' for compatibility
-      notes,
+      details,
       submittedAt,
     } = data
 
@@ -32,11 +40,7 @@ export async function POST(request: Request) {
       serviceId: !!serviceId,
       serviceName: !!serviceName,
       details: !!details,
-      notes: !!notes,
     })
-
-    // Use details if provided, otherwise use notes
-    const customerDetails = details || notes
 
     // Validate required fields
     if (
@@ -46,7 +50,7 @@ export async function POST(request: Request) {
       !phoneNumber ||
       !serviceId ||
       !serviceName ||
-      !customerDetails
+      !details
     ) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -73,7 +77,7 @@ export async function POST(request: Request) {
     }
 
     // Validate details length
-    if (customerDetails.trim().length < 10) {
+    if (details.trim().length < 10) {
       return NextResponse.json(
         { error: 'Details must be at least 10 characters long' },
         { status: 400 }
@@ -102,7 +106,8 @@ export async function POST(request: Request) {
       subServiceId: subServiceId || undefined,
       subServiceName: subServiceName || undefined,
       subServicePrice: subServicePrice || undefined,
-      details: customerDetails.trim(), // Use the unified details field
+      details: details.trim(),
+      status: "pending",
       submittedAt: submittedAt || new Date(),
     })
 
@@ -140,7 +145,7 @@ export async function POST(request: Request) {
 }
 
 // GET - Fetch all bookings (admin only)
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await auth()
 
@@ -156,11 +161,21 @@ export async function GET() {
     const bookings = await Booking.find({}).sort({ createdAt: -1 }).lean()
 
     const formattedBookings = bookings.map((booking) => ({
-      ...booking,
       _id: (booking as any)._id.toString(),
-      createdAt: (booking as any).createdAt.toISOString(),
-      updatedAt: (booking as any).updatedAt.toISOString(),
-      submittedAt: (booking as any).submittedAt.toISOString(),
+      bookingId: booking.bookingId || "",
+      fullName: booking.fullName || "",
+      emailAddress: booking.emailAddress || "",
+      phoneNumber: booking.phoneNumber || "",
+      serviceId: booking.serviceId || "",
+      serviceName: booking.serviceName || "",
+      subServiceId: booking.subServiceId || "",
+      subServiceName: booking.subServiceName || "",
+      subServicePrice: booking.subServicePrice || 0,
+      details: booking.details || "",
+      status: booking.status || "pending",
+      createdAt: safeToISOString((booking as any).createdAt),
+      updatedAt: safeToISOString((booking as any).updatedAt),
+      submittedAt: safeToISOString(booking.submittedAt),
     }))
 
     return NextResponse.json({
@@ -175,4 +190,4 @@ export async function GET() {
       { status: 500 }
     )
   }
-}
+} 

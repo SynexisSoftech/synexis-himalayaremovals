@@ -287,22 +287,14 @@ export default function BookingSection() {
         subServiceId: selectedSubService?._id || '',
         subServiceName: selectedSubService?.name || '',
         subServicePrice: selectedSubService?.price || 0,
-        notes: `Contact form submission - Customer requesting ${
-          selectedSubService
-            ? `${selectedSubService.name} (${selectedSubService.serviceName})`
-            : selectedService?.name || 'information'
-        }. Contact details: Name: ${formData.fullName.trim()}, Email: ${formData.emailAddress.trim()}, Phone: ${formData.phoneNumber.trim()}. 
-
-Customer Details: ${
-          formData.details.trim() || 'No additional details provided.'
-        }`, // Updated notes to include details
+        details: formData.details.trim() || 'No additional details provided.',
         status: 'pending',
         submittedAt: new Date().toISOString(),
       }
 
       console.log('Submitting booking data:', bookingData)
 
-      const response = await fetch('/api/booking', {
+      const response = await fetch('/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

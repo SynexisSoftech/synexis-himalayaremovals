@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Calendar, Users, Settings, LogOut, Truck, Menu, User } from "lucide-react"
+import { Home, Calendar, Users, Settings, LogOut, Truck, Menu, User, Wrench } from "lucide-react"
 
 interface NavigationItem {
   name: string
@@ -15,6 +15,8 @@ interface NavigationItem {
 const navigation: NavigationItem[] = [
   { name: "Dashboard", href: "/admin", icon: Home },
   { name: "Bookings", href: "/admin/bookings", icon: Calendar },
+  { name: "Services", href: "/admin/services", icon: Wrench },
+  { name: "Enhanced Services", href: "/admin/enhanced-services", icon: Wrench },
   { name: "Contacts", href: "/admin/contacts", icon: Users },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]

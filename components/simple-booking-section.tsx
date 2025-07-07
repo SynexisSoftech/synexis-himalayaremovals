@@ -247,6 +247,7 @@ export default function BookingSection() {
         subServiceName: selectedSubService?.name || "",
         subServicePrice: selectedSubService?.price || 0,
         details: formData.details.trim(), // This is the key field that was missing
+        status: "pending", // Explicitly set status
         submittedAt: new Date().toISOString(),
       }
 

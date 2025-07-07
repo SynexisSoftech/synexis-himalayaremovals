@@ -34,24 +34,24 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Booking not found" }, { status: 404 })
     }
 
-    console.log("Found booking:", booking.bookingId)
+    console.log("Found booking:", (booking as any).bookingId)
 
     const formattedBooking = {
-      _id: booking._id.toString(),
-      bookingId: booking.bookingId || "",
-      fullName: booking.fullName || "",
-      emailAddress: booking.emailAddress || "",
-      phoneNumber: booking.phoneNumber || "",
-      serviceId: booking.serviceId || "",
-      serviceName: booking.serviceName || "",
-      subServiceId: booking.subServiceId || "",
-      subServiceName: booking.subServiceName || "",
-      subServicePrice: booking.subServicePrice || 0,
-      details: booking.details || "",
-      status: booking.status || "pending",
-      createdAt: safeToISOString(booking.createdAt),
-      updatedAt: safeToISOString(booking.updatedAt),
-      submittedAt: safeToISOString(booking.submittedAt),
+      _id: (booking as any)._id.toString(),
+      bookingId: (booking as any).bookingId || "",
+      fullName: (booking as any).fullName || "",
+      emailAddress: (booking as any).emailAddress || "",
+      phoneNumber: (booking as any).phoneNumber || "",
+      serviceId: (booking as any).serviceId || "",
+      serviceName: (booking as any).serviceName || "",
+      subServiceId: (booking as any).subServiceId || "",
+      subServiceName: (booking as any).subServiceName || "",
+      subServicePrice: (booking as any).subServicePrice || 0,
+      details: (booking as any).details || "",
+      status: (booking as any).status || "pending",
+      createdAt: safeToISOString((booking as any).createdAt),
+      updatedAt: safeToISOString((booking as any).updatedAt),
+      submittedAt: safeToISOString((booking as any).submittedAt),
     }
 
     return NextResponse.json({
@@ -110,14 +110,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: "Booking not found" }, { status: 404 })
     }
 
-    console.log("Successfully updated booking:", booking.bookingId)
+    console.log("Successfully updated booking:", (booking as any).bookingId)
 
     const formattedBooking = {
-      _id: booking._id.toString(),
-      bookingId: booking.bookingId,
-      status: booking.status,
-      details: booking.details,
-      updatedAt: safeToISOString(booking.updatedAt),
+      _id: (booking as any)._id.toString(),
+      bookingId: (booking as any).bookingId,
+      status: (booking as any).status,
+      details: (booking as any).details,
+      updatedAt: safeToISOString((booking as any).updatedAt),
     }
 
     return NextResponse.json({
@@ -187,4 +187,4 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       { status: 500 },
     )
   }
-}
+} 

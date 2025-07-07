@@ -46,7 +46,7 @@ export function BookingsManager() {
 
       console.log("Fetching bookings...")
 
-      const response = await fetch("/api/admin/bookings")
+      const response = await fetch("/api/bookings")
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -119,7 +119,9 @@ export function BookingsManager() {
   // Update booking status
   const updateBookingStatus = async (bookingId: string, status: string, notes?: string) => {
     try {
-      const response = await fetch(`/api/admin/bookings/${bookingId}`, {
+      console.log("Attempting to update booking status:", bookingId, status)
+      
+      const response = await fetch(`/api/bookings/${bookingId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -127,7 +129,26 @@ export function BookingsManager() {
         body: JSON.stringify({ status, notes }),
       })
 
-      const data = await response.json()
+      console.log("Update response status:", response.status)
+
+      // Check if response is ok before trying to parse JSON
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error("Update response error:", errorText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      // Check if response has content before parsing JSON
+      const responseText = await response.text()
+      console.log("Update response text:", responseText)
+
+      if (!responseText) {
+        throw new Error("Empty response from server")
+      }
+
+      const data = JSON.parse(responseText)
+      console.log("Update response data:", data)
+
       if (data.success) {
         showToast(`Booking status updated to ${status}`, "success")
         fetchBookings() // Refresh the list
@@ -144,7 +165,7 @@ export function BookingsManager() {
       }
     } catch (error) {
       console.error("Error updating booking:", error)
-      showToast("Error updating booking", "error")
+      showToast(error instanceof Error ? error.message : "Error updating booking", "error")
     }
   }
 
@@ -155,11 +176,33 @@ export function BookingsManager() {
     }
 
     try {
-      const response = await fetch(`/api/admin/bookings/${bookingId}`, {
+      console.log("Attempting to delete booking:", bookingId)
+      
+      const response = await fetch(`/api/bookings/${bookingId}`, {
         method: "DELETE",
       })
 
-      const data = await response.json()
+      console.log("Delete response status:", response.status)
+      console.log("Delete response headers:", response.headers)
+
+      // Check if response is ok before trying to parse JSON
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error("Delete response error:", errorText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      // Check if response has content before parsing JSON
+      const responseText = await response.text()
+      console.log("Delete response text:", responseText)
+
+      if (!responseText) {
+        throw new Error("Empty response from server")
+      }
+
+      const data = JSON.parse(responseText)
+      console.log("Delete response data:", data)
+
       if (data.success) {
         showToast("Booking deleted successfully", "success")
         fetchBookings() // Refresh the list
@@ -173,7 +216,7 @@ export function BookingsManager() {
       }
     } catch (error) {
       console.error("Error deleting booking:", error)
-      showToast("Error deleting booking", "error")
+      showToast(error instanceof Error ? error.message : "Error deleting booking", "error")
     }
   }
 

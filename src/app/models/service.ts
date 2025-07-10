@@ -1,31 +1,49 @@
-import mongoose, { Schema, type Document } from "mongoose"
+// /app/models/service.ts
 
-export interface IService extends Document {
-  name: string
-  description: string
-  isActive: boolean
-  basePrice?: number
-  priceType: "fixed" | "hourly" | "per_item" | "custom"
-  category: string
-  createdAt: Date
-  updatedAt: Date
+import { Document, Schema, model, models } from "mongoose";
+
+// Define the ISubService interface directly in this file
+export interface ISubService {
+  title: string;
+  description?: string;
+  price?: number;
 }
 
-const serviceSchema = new Schema(
-  {
-    name: { type: String, required: true, trim: true },
-    description: { type: String, required: true },
-    isActive: { type: Boolean, default: true },
-    basePrice: { type: Number, min: 0 },
-    priceType: {
-      type: String,
-      enum: ["fixed", "hourly", "per_item", "custom"],
-      default: "custom",
-    },
-    category: { type: String, required: true, trim: true },
-  },
-  { timestamps: true },
-)
+// Define the IService document interface
+export interface IService extends Document {
+  name: string;
+  // +++ ADDED: title, description, and category to the interface +++
+  title: string;
+  description: string;
+  category: string;
+  moves: string[];
+  isActive: boolean;
+  subServices: ISubService[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-const Service = mongoose.models.Service || mongoose.model<IService>("Service", serviceSchema)
-export default Service
+// Define the SubServiceSchema directly in this file
+const SubServiceSchema: Schema = new Schema<ISubService>({
+  title: { type: String, required: true },
+  description: { type: String },
+  price: { type: Number },
+});
+
+// Define the main ServiceSchema
+const ServiceSchema: Schema = new Schema<IService>(
+  {
+    name: { type: String, required: true, unique: true },
+    // +++ ADDED: The missing fields to the schema to match the API logic +++
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    category: { type: String, required: true },
+    moves: { type: [String], default: [] },
+    isActive: { type: Boolean, default: true },
+    subServices: { type: [SubServiceSchema], default: [] },
+  },
+  { timestamps: true }
+);
+
+// Export the model
+export default models.Service || model<IService>("Service", ServiceSchema);

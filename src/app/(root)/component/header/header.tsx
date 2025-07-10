@@ -16,7 +16,9 @@ export default function Header() {
     { id: "about", label: "About", href: "/about" },
     { id: "services", label: "Services", href: "/ourservice" },
     { id: "booking", label: "Booking", href: "/booking" },
+     { id: "Blogs", label: "Blogs", href: "/Blogs" },
     { id: "contact", label: "Contact", href: "/contact" },
+   
   ]
 
   // Scroll effect

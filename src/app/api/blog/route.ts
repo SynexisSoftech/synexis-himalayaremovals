@@ -28,7 +28,9 @@ export async function GET(request: NextRequest) {
 
     const total = await Blog.countDocuments(query)
 
+    // This response structure is correct
     return NextResponse.json({
+      success: true, // Explicitly adding success property
       blogs,
       pagination: {
         page,
@@ -39,7 +41,7 @@ export async function GET(request: NextRequest) {
     })
   } catch (error) {
     console.error("Error fetching blogs:", error)
-    return NextResponse.json({ error: "Failed to fetch blogs" }, { status: 500 })
+    return NextResponse.json({ success: false, error: "Failed to fetch blogs" }, { status: 500 })
   }
 }
 

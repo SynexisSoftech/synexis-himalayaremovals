@@ -4,6 +4,8 @@ import Link from "next/link"
 
 import Blog from "@/app/models/blog"
 import { connectToDatabase } from "@/app/lib/mongodb"
+
+
 interface BlogPost {
   _id: string
   title: string
@@ -171,11 +173,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         {blog.heroImage && (
           <div className="absolute inset-0">
             <Image
-              src={blog.heroImage || "/placeholder.svg"}
+              src={blog.heroImage || "/placeholder.svg?height=600&width=1200"}
               alt={blog.heroTitle}
               fill
               className="object-cover"
-              priority
+              
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
           </div>
@@ -202,11 +204,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               <div className="flex items-center space-x-3">
                 {blog.author.image && (
                   <Image
-                    src={blog.author.image || "/placeholder.svg"}
+                    src={blog.author.image || "/placeholder.svg?height=40&width=40"}
                     alt={blog.author.name}
                     width={40}
                     height={40}
                     className="rounded-full ring-2 ring-white/20"
+                  
                   />
                 )}
                 <div className="text-left">
@@ -265,10 +268,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <div className="mb-16">
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src={blog.mainImage || "/placeholder.svg"}
+                src={blog.mainImage || "/placeholder.svg?height=400&width=800"}
                 alt="Article illustration"
                 fill
                 className="object-cover"
+               
               />
             </div>
           </div>
@@ -327,11 +331,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               <div className="flex items-center space-x-4 mb-6 md:mb-0">
                 {blog.author.image && (
                   <Image
-                    src={blog.author.image || "/placeholder.svg"}
+                    src={blog.author.image || "/placeholder.svg?height=64&width=64"}
                     alt={blog.author.name}
                     width={64}
                     height={64}
                     className="rounded-full ring-4 ring-white shadow-lg"
+                  
                   />
                 )}
                 <div>
@@ -389,10 +394,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                       {(post.cardImage || post.heroImage) && (
                         <div className="aspect-video relative overflow-hidden">
                           <Image
-                            src={post.cardImage || post.heroImage}
+                            src={post.cardImage || post.heroImage || "/placeholder.svg?height=300&width=400"}
                             alt={post.title}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          
                           />
                         </div>
                       )}
@@ -401,11 +407,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                         <div className="flex items-center space-x-2 text-sm text-gray-500 mb-3">
                           {post.author.image && (
                             <Image
-                              src={post.author.image || "/placeholder.svg"}
+                              src={post.author.image || "/placeholder.svg?height=20&width=20"}
                               alt={post.author.name}
                               width={20}
                               height={20}
                               className="rounded-full"
+                              
                             />
                           )}
                           <span>{post.author.name}</span>

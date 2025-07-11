@@ -1,6 +1,6 @@
 // app/api/contact/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '../../../../lib/db';
+import { connectToDatabase } from '../../lib/mongodb';
 import Contact from '../../../../models/contact'; // Make sure this path matches your structure
 
 export async function POST(req: NextRequest) {

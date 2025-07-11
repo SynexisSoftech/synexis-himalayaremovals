@@ -1,87 +1,126 @@
-// /app/api/admin/services/route.ts
-
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { auth } from "@/auth"
+import { Service } from "@/app/models/service"
 import { connectToDatabase } from "@/app/lib/mongodb"
-import Service from "@/app/models/service"
 
-// GET - Fetch all services
-export async function GET(request: NextRequest) {
-  // ... (No changes needed in GET, it was correct)
-  try {
-    const session = await auth()
-    if (!session?.user || session.user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-    await connectToDatabase()
-    const { searchParams } = new URL(request.url)
-    const page = Number.parseInt(searchParams.get("page") || "1")
-    const limit = Number.parseInt(searchParams.get("limit") || "10")
-    const search = searchParams.get("search") || ""
-    const query = search ? { name: { $regex: search, $options: "i" } } : {}
-    const skip = (page - 1) * limit
-    const services = await Service.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit)
-    const total = await Service.countDocuments(query)
-    return NextResponse.json({
-      services,
-      pagination: { page, limit, total, pages: Math.ceil(total / limit) },
-    })
-  } catch (error) {
-    console.error("Error fetching services:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  }
+// POST /api/admin/services
+
+interface ServiceData {
+  title: string
+  subServices: string[]
 }
 
-// POST - Create a new service
-export async function POST(request: NextRequest) {
-  // ... (No major changes, but this logic now works with the updated schema)
-  try {
-    const session = await auth()
-    if (!session?.user || session.user.role !== "admin") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-    await connectToDatabase()
-    const body = await request.json()
-    const { title, name, description, category, subServices = [], isActive = true, moves = [] } = body
-    const serviceName = name || title
+export async function POST(req: Request) {
+  try {
+    const session = await auth()
 
-    if (!serviceName || !description || !category) {
-      return NextResponse.json({ error: "Name, description, and category are required" }, { status: 400 })
-    }
-    
-    // ... (rest of the validation logic for subServices can remain)
+    // Check if user is authenticated and an admin
+    if (!session || session.user?.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    }
 
-    const existingService = await Service.findOne({
-      name: { $regex: new RegExp(`^${serviceName.trim()}$`, "i") },
-    })
+    // Connect to MongoDB
+    await connectToDatabase()
 
-    if (existingService) {
-      return NextResponse.json({ error: "A service with this name already exists" }, { status: 409 })
-    }
+    // Parse request body
+    const body = await req.json()
 
-    const newService = new Service({
-      name: serviceName.trim(),
-      // +++ FIX: Ensure title is saved, defaulting to name if not provided +++
-      title: (title || serviceName).trim(),
-      description: description.trim(),
-      category: category.trim(),
-      isActive: isActive !== undefined ? isActive : true,
-      subServices: subServices || [],
-      moves: moves || [],
-    })
+    // Determine if we're creating single or multiple services
+    let servicesToCreate: ServiceData[] = []
 
-    const savedService = await newService.save()
+    if (Array.isArray(body)) {
+      // Handle array of services
+      servicesToCreate = body
+    } else if (body.services && Array.isArray(body.services)) {
+      // Handle { services: [...] } format
+      servicesToCreate = body.services
+    } else if (body.title && body.subServices) {
+      // Handle single service format
+      servicesToCreate = [{ title: body.title, subServices: body.subServices }]
+    } else {
+      return NextResponse.json(
+        { message: "Invalid request format. Expected single service or array of services." },
+        { status: 400 },
+      )
+    }
 
-    return NextResponse.json({ message: "Service created successfully", service: savedService, }, { status: 201 })
-  } catch (error) {
-    // ... (Error handling remains the same)
-    console.error("Error creating service:", error)
-    if (error.name === "ValidationError") {
-      return NextResponse.json({ error: "Validation error", details: error.message }, { status: 400 })
-    }
-    if (error.code === 11000) {
-      return NextResponse.json({ error: "A service with this name already exists" }, { status: 409 })
-    }
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
-  }
+    // Validate all services
+    for (const service of servicesToCreate) {
+      if (!service.title || !Array.isArray(service.subServices)) {
+        return NextResponse.json({ message: "Each service must have a title and subServices array" }, { status: 400 })
+      }
+    }
+
+    // Check for duplicates in the request
+    const titles = servicesToCreate.map((service) => service.title)
+    const uniqueTitles = new Set(titles)
+    if (titles.length !== uniqueTitles.size) {
+      return NextResponse.json({ message: "Duplicate titles found in request" }, { status: 400 })
+    }
+
+    // Check if any services with these titles already exist
+    const existingServices = await Service.find({
+      title: { $in: titles },
+    })
+
+    if (existingServices.length > 0) {
+      const existingTitles = existingServices.map((service) => service.title)
+      return NextResponse.json(
+        {
+          message: "Services with the following titles already exist",
+          existingTitles,
+        },
+        { status: 409 },
+      )
+    }
+
+    // Create all services
+    const createdServices = await Service.insertMany(servicesToCreate)
+
+    // Return appropriate response based on input format
+    if (servicesToCreate.length === 1) {
+      return NextResponse.json(createdServices[0], { status: 201 })
+    } else {
+      return NextResponse.json(
+        {
+          message: `Successfully created ${createdServices.length} services`,
+          services: createdServices,
+        },
+        { status: 201 },
+      )
+    }
+  } catch (error) {
+    console.error("Error creating service(s):", error)
+
+    // Handle duplicate key errors specifically
+    if (error.code === 11000) {
+      return NextResponse.json(
+        {
+          message: "One or more services with this information already exist",
+        },
+        { status: 409 },
+      )
+    }
+
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
+  }
+}
+
+
+export async function GET() {
+  try {
+    const session = await auth()
+
+    if (!session || session.user?.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
+    }
+
+    await connectToDatabase()
+    const services = await Service.find().sort({ createdAt: -1 })
+
+    return NextResponse.json(services)
+  } catch (error) {
+    console.error("Error fetching services:", error)
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 })
+  }
 }

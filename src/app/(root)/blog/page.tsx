@@ -93,7 +93,7 @@ export default async function BlogPage() {
   };
 
   const featuredBlogs = blogs.filter((blog) => blog.featured).slice(0, 3);
-  const regularBlogs = blogs.filter((blog) => !blog.featured);
+  
 
   return (
     <div className="min-h-screen bg-white">
@@ -114,14 +114,14 @@ export default async function BlogPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* API Status Indicator (for development) */}
-        {process.env.NODE_ENV === "development" && (
+        {/* {process.env.NODE_ENV === "development" && (
           <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <p className="text-sm text-blue-800">
               📡 <strong>API Status:</strong>{" "}
               {blogs.length > 0 ? `Successfully loaded ${blogs.length} posts from API` : "No posts found or API error"}
             </p>
           </div>
-        )}
+        )} */}
 
         {/* Featured Posts */}
         {featuredBlogs.length > 0 && (
@@ -203,100 +203,7 @@ export default async function BlogPage() {
         )}
 
         {/* All Posts */}
-        <section>
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-3xl font-bold text-gray-900">Latest Articles</h2>
-            <div className="h-1 flex-1 bg-gradient-to-r from-purple-600 to-pink-600 ml-8 rounded-full"></div>
-          </div>
-
-          {regularBlogs.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {regularBlogs.map((blog) => (
-                <article key={blog._id} className="group">
-                  <Link href={`/blog/${blog.slug}`}>
-                    <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                      {(blog.cardImage || blog.heroImage) && (
-                        <div className="aspect-video relative overflow-hidden">
-                          <SafeImage
-                            src={blog.cardImage || blog.heroImage}
-                            alt={blog.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            fallbackSrc="/placeholder.svg?height=400&width=600"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent"></div>
-                        </div>
-                      )}
-
-                      <div className="p-6">
-                        <div className="flex items-center space-x-3 text-sm text-gray-500 mb-3">
-                          {blog.author.image && (
-                            <SafeImage
-                              src={blog.author.image}
-                              alt={blog.author.name}
-                              width={24}
-                              height={24}
-                              className="rounded-full"
-                              fallbackSrc="/placeholder.svg?height=24&width=24"
-                            />
-                          )}
-                          <span className="font-medium">{blog.author.name}</span>
-                          <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                          <time>{formatDate(blog.publishedDate)}</time>
-                        </div>
-
-                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors leading-tight">
-                          {blog.title}
-                        </h3>
-
-                        <p className="text-gray-600 line-clamp-3 text-sm leading-relaxed">{blog.excerpt}</p>
-
-                        <div className="mt-4 flex items-center text-blue-600 font-medium text-sm group-hover:text-blue-700">
-                          <span>Read Article</span>
-                          <svg
-                            className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="max-w-md mx-auto">
-                <svg
-                  className="mx-auto h-16 w-16 text-gray-400 mb-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No articles yet</h3>
-                <p className="text-gray-600 mb-4">Check back soon for our latest content!</p>
-                <Link
-                  href="/admin/blog"
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Create First Post
-                </Link>
-              </div>
-            </div>
-          )}
-        </section>
-
+       
         {/* Newsletter Signup */}
         <section className="mt-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Stay Updated</h2>

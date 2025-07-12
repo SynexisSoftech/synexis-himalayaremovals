@@ -3,6 +3,9 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 
+import Header from "../component/header/header"
+import Footer from "../component/footer/footer"
+
 interface Service {
   _id: string
   title: string
@@ -199,7 +202,8 @@ export default function BookingPage() {
   // Get minimum date (today) for date input
   const today = new Date().toISOString().split("T")[0]
 
-  return (
+  return ( 
+   <div><Header/>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50">
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
@@ -212,7 +216,7 @@ export default function BookingPage() {
 
         <div className="bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
+          <div className="bg-gradient-to-r from-[#00968a] to-[#00968a] text-white p-6">
             <h2 className="text-2xl font-bold">Booking Request Form</h2>
             <p className="text-blue-100 mt-2">Please provide all the required information for an accurate quote</p>
           </div>
@@ -622,6 +626,7 @@ export default function BookingPage() {
                                   <p className="text-sm font-medium text-green-600 mt-1">${subService.price}</p>
                                 )}
                               </div>
+                              
                             </div>
                           ))}
                         </div>
@@ -636,7 +641,7 @@ export default function BookingPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || isLoadingServices || !!serviceError}
-                  className="w-full py-3 px-6 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-md shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  className="w-full py-3 px-6 text-lg font-semibold text-white bg-gradient-to-r from-[#00968a] to-[#00968a] hover:[#00968a] hover:to-[#04786e] rounded-md shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">
@@ -675,7 +680,7 @@ export default function BookingPage() {
                   d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                 />
               </svg>
-              Call: (123) 456-7890
+              Call:0452272533
             </a>
             <a
               href="mailto:info@movingcompany.com"
@@ -694,6 +699,8 @@ export default function BookingPage() {
           </div>
         </div>
       </div>
+    </div>
+    <Footer/>
     </div>
   )
 }

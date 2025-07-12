@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Image from "next/image"
 
-export default function Header() {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -128,7 +128,7 @@ export default function Header() {
                 <h1 className="text-2xl font-bold text-gray-800 group-hover:text-teal-600 transition-colors">
                   HIMALAYA
                 </h1>
-                <p className="text-sm text-teal-600 font-semibold">REMOVALS</p>
+                <p className="text-sm text-teal-600 font-semibold">PEST CONTROL</p>
               </div>
             </div>
 

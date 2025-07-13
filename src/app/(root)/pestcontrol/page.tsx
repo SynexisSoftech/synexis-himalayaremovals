@@ -1,5 +1,5 @@
 
-import ContactUs from "../pestcomponents/contact-us";
+import Contact from "../pestcomponents/contact-us";
 import Footer from "../pestcomponents/footer/footer";
 import HeroSection from "../pestcomponents/hero-section";
 import Navbar from "../pestcomponents/navbar/navbar";
@@ -15,7 +15,7 @@ export default function Page() {
       <HeroSection />
       <PestControlServices/>
       <WhyTrustHimalaya/>
-      <ContactUs/>
+      <Contact/>
       <Footer/>
     </main>
   )

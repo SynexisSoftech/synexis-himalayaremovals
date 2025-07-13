@@ -116,6 +116,26 @@ export default async function AdminLayout({
                     </svg>
                     Services
                   </Link>
+                  <Link
+                    href='/admin/contacts'
+                    className='inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors'
+                  >
+                    <svg
+                      className='mr-2 h-4 w-4'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-6m-2-5h6m-6 0V9a2 2 0 012-2h2a2 2 0 012 2v7m-6 0h6'
+                      />
+                    </svg>
+                    Contacts
+                  </Link>
+                  
                    <Link
                     href='/admin/bookings'
                     className='inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors'
@@ -135,6 +155,7 @@ export default async function AdminLayout({
                     </svg>
                     Bookings
                   </Link>
+                  
                 </div>
               </div>
               <div className='flex items-center space-x-4'>

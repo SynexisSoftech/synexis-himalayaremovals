@@ -1,241 +1,322 @@
-export default function ContactUs() {
+"use client"
+
+import type React from "react"
+import { useState } from "react"
+import axios from "axios"
+
+
+
+interface ContactFormData {
+  fullname: string
+  email: string
+  phonenumber: string
+  serviceRequired: string
+  message: string
+}
+
+export default function Contact() {
+  const [formData, setFormData] = useState<ContactFormData>({
+    fullname: "",
+    email: "",
+    phonenumber: "",
+    serviceRequired: "",
+    message: "",
+  })
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setSubmitMessage(null)
+
+    try {
+      // Convert phonenumber to number for API
+      const submitData = {
+        ...formData,
+        phonenumber: Number.parseInt(formData.phonenumber, 10),
+      }
+
+      // Send data to API using axios
+      const response = await axios.post("/api/contact", submitData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      console.log("Form submitted successfully:", response.data)
+
+      setSubmitMessage("Message sent successfully! We'll get back to you soon.")
+      setFormData({
+        fullname: "",
+        email: "",
+        phonenumber: "",
+        serviceRequired: "",
+        message: "",
+      })
+    } catch (error) {
+      console.error("Form submission error:", error)
+
+      // Handle different types of errors
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          // Server responded with error status
+          setSubmitMessage(`Failed to send message: ${error.response.data?.error || "Server error"}`)
+        } else if (error.request) {
+          // Request was made but no response received
+          setSubmitMessage("Failed to send message: No response from server. Please check your connection.")
+        } else {
+          // Something else happened
+          setSubmitMessage("Failed to send message: Request setup error.")
+        }
+      } else {
+        setSubmitMessage("Failed to send message. Please try again later.")
+      }
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
   return (
-    <div className="container mx-auto py-12 px-4 md:px-6 lg:px-8">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Contact Information Section */}
-        <div className="space-y-8">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="pb-6">
-              <h2 className="text-2xl font-bold">Contact Information</h2>
-            </div>
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Address</h3>
-                  <p className="text-gray-600">Australia</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Phone</h3>
-                  <p className="text-gray-600">0452272533</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 text-orange-600 flex-shrink-0">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Email</h3>
-                  <p className="text-gray-600">himalayaremovals7@gmail.com</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 flex-shrink-0">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg">Business Hours</h3>
-                  <p className="text-gray-600">Mon - Sat: 8:00 AM - 6:00 PM</p>
-                  <p className="text-gray-600">Sunday: 9:00 AM - 4:00 PM</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 24/7 Emergency Service */}
-          <div className="rounded-lg border border-orange-300 bg-orange-50 p-6 shadow-sm">
-            <h3 className="text-xl font-bold text-orange-700">24/7 Emergency Service</h3>
-            <p className="mt-2 text-orange-600">
-              Need urgent pest control assistance? We&apos;re available round the clock for emergency situations.
+    <div>
+      
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">Get In Touch</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Ready to start your move? Contact us today for a free quote and consultation. We&apos;re here to make your
+              relocation smooth and stress-free.
             </p>
-            <button className="mt-4 w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-orange-500 hover:bg-orange-600 text-white h-10 px-4 py-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="mr-2 h-4 w-4"
-              >
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                <path d="M14.5 4.5l5 5" />
-                <path d="M14.5 9.5l5-5" />
-              </svg>
-              Call Emergency Line
-            </button>
           </div>
-        </div>
 
-        {/* Send Us a Message Section */}
-        <div className="bg-white p-6 rounded-lg shadow-sm">
-          <div className="pb-6">
-            <h2 className="text-2xl font-bold">Send Us a Message</h2>
-          </div>
-          <div>
-            <form className="grid gap-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label
-                    htmlFor="fullName"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Full Name *
-                  </label>
-                  <input
-                    id="fullName"
-                    placeholder="Your full name"
-                    required
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label
-                    htmlFor="phone"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Phone Number *
-                  </label>
-                  <input
-                    id="phone"
-                    placeholder="Your phone number"
-                    type="tel"
-                    required
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Email Address *
-                </label>
-                <input
-                  id="email"
-                  placeholder="your.email@example.com"
-                  type="email"
-                  required
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="service"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Service Required *
-                </label>
-                <div className="relative">
-                  <select
-                    id="service"
-                    defaultValue="general-pest-control"
-                    className="flex h-10 w-full appearance-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-8"
-                  >
-                    <option value="general-pest-control">General Pest Control</option>
-                    <option value="termite-treatment">Termite Treatment</option>
-                    <option value="rodent-control">Rodent Control</option>
-                    <option value="bed-bug-extermination">Bed Bug Extermination</option>
-                    <option value="cockroach-control">Cockroach Control</option>
-                    <option value="other">Other</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 6.757 7.586 5.343 9z" />
-                    </svg>
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Contact Information */}
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-6">Contact Information</h3>
+
+                <div className="space-y-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <title>Address Icon</title>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-800 mb-1">Address</h4>
+                      <p className="text-gray-600">Australia</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <title>Phone Icon</title>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-800 mb-1">Phone</h4>
+                      <a href="tel:0452272533" className="text-gray-600 hover:text-teal-600 transition-colors">
+                        0452272533
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <title>Email Icon</title>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-800 mb-1">Email</h4>
+                      <a
+                        href="mailto:himalayaremovals7@gmail.com"
+                        className="text-gray-600 hover:text-teal-600 transition-colors"
+                      >
+                        himalayaremovals7@gmail.com
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <title>Business Hours Icon</title>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-800 mb-1">Business Hours</h4>
+                      <p className="text-gray-600">Mon - Sat: 8:00 AM - 6:00 PM</p>
+                      <p className="text-gray-600">Sunday: 9:00 AM - 4:00 PM</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <label
-                  htmlFor="message"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+             
+            </div>
+
+            {/* Contact Form */}
+            <div className="bg-gradient-to-br from-slate-50 to-teal-50 rounded-2xl p-8 border border-gray-200">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">Send Us a Message</h3>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="fullname" className="block text-sm font-medium text-gray-700 mb-2">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="fullname"
+                      name="fullname"
+                      required
+                      value={formData.fullname}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      placeholder="Your full name"
+                      aria-required="true"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="phonenumber" className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      id="phonenumber"
+                      name="phonenumber"
+                      required
+                      value={formData.phonenumber}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      placeholder="Your phone number"
+                      aria-required="true"
+                      pattern="[0-9]+"
+                      title="Please enter a valid phone number"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    placeholder="your.email@example.com"
+                    aria-required="true"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="serviceRequired" className="block text-sm font-medium text-gray-700 mb-2">
+                    Service Required *
+                  </label>
+                  <select
+                    id="serviceRequired"
+                    name="serviceRequired"
+                    required
+                    value={formData.serviceRequired}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    aria-required="true"
+                  >
+                    <option value="">Select a service</option>
+                    <option value="House Removal">Removal</option>
+                    <option value="Rubbish Removal">Rubbish Removal</option>
+                     <option value="Pest Control">Pest Control</option>
+                    
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    Message *
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={4}
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all resize-none"
+                    placeholder="Tell us about your moving requirements..."
+                    aria-required="true"
+                  />
+                </div>
+
+                {submitMessage && (
+                  <p
+                    className={`text-center text-sm ${
+                      submitMessage.includes("successfully") ? "text-green-600" : "text-red-600"
+                    }`}
+                    role="alert"
+                  >
+                    {submitMessage}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-teal-500 to-teal-600 text-white py-3 rounded-lg font-semibold hover:from-teal-600 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
                 >
-                  Message *
-                </label>
-                <textarea
-                  id="message"
-                  placeholder="Tell us about your pest control requirements..."
-                  className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  required
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white"
-              >
-                Send Message
-              </button>
-            </form>
+                  {isSubmitting ? "Sending Message..." : "Send Message"}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+    
     </div>
   )
 }

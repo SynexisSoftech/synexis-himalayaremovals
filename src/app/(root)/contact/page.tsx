@@ -1,11 +1,13 @@
+// app/contact/page.tsx
 "use client"
-
 import type React from "react"
 import { useState } from "react"
 import axios from "axios"
-import Footer from "../component/footer/footer"
-import Header from "../component/header/header"
+ 
 
+import { SERVICE_TYPES } from "../../lib/constant" // Import the constant
+import Header from "../component/header/header"
+import Footer from "../component/footer/footer"
 
 interface ContactFormData {
   fullname: string
@@ -23,7 +25,6 @@ export default function Contact() {
     serviceRequired: "",
     message: "",
   })
-
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitMessage, setSubmitMessage] = useState<string | null>(null)
 
@@ -31,23 +32,19 @@ export default function Contact() {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitMessage(null)
-
     try {
       // Convert phonenumber to number for API
       const submitData = {
         ...formData,
         phonenumber: Number.parseInt(formData.phonenumber, 10),
       }
-
       // Send data to API using axios
       const response = await axios.post("/api/contact", submitData, {
         headers: {
           "Content-Type": "application/json",
         },
       })
-
       console.log("Form submitted successfully:", response.data)
-
       setSubmitMessage("Message sent successfully! We'll get back to you soon.")
       setFormData({
         fullname: "",
@@ -58,7 +55,6 @@ export default function Contact() {
       })
     } catch (error) {
       console.error("Form submission error:", error)
-
       // Handle different types of errors
       if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -98,13 +94,11 @@ export default function Contact() {
               relocation smooth and stress-free.
             </p>
           </div>
-
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Information */}
             <div className="space-y-8">
               <div>
                 <h3 className="text-2xl font-bold text-gray-800 mb-6">Contact Information</h3>
-
                 <div className="space-y-6">
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -129,7 +123,6 @@ export default function Contact() {
                       <p className="text-gray-600">Australia</p>
                     </div>
                   </div>
-
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +142,6 @@ export default function Contact() {
                       </a>
                     </div>
                   </div>
-
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -172,7 +164,6 @@ export default function Contact() {
                       </a>
                     </div>
                   </div>
-
                   <div className="flex items-start space-x-4">
                     <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,26 +184,10 @@ export default function Contact() {
                   </div>
                 </div>
               </div>
-
-              {/* Emergency Contact */}
-              <div className="bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
-                <h4 className="text-lg font-semibold text-orange-800 mb-2">24/7 Emergency Service</h4>
-                <p className="text-orange-700 mb-3">
-                  Need urgent moving assistance? We&apos;re available round the clock for emergency relocations.
-                </p>
-                <a
-                  href="tel:+9779851331114"
-                  className="inline-block bg-gradient-to-r from-orange-400 to-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-orange-500 hover:to-orange-600 transition-colors cursor-pointer"
-                >
-                  Call Emergency Line
-                </a>
-              </div>
             </div>
-
             {/* Contact Form */}
             <div className="bg-gradient-to-br from-slate-50 to-teal-50 rounded-2xl p-8 border border-gray-200">
               <h3 className="text-2xl font-bold text-gray-800 mb-6">Send Us a Message</h3>
-
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -231,7 +206,6 @@ export default function Contact() {
                       aria-required="true"
                     />
                   </div>
-
                   <div>
                     <label htmlFor="phonenumber" className="block text-sm font-medium text-gray-700 mb-2">
                       Phone Number *
@@ -251,7 +225,6 @@ export default function Contact() {
                     />
                   </div>
                 </div>
-
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                     Email Address *
@@ -268,7 +241,6 @@ export default function Contact() {
                     aria-required="true"
                   />
                 </div>
-
                 <div>
                   <label htmlFor="serviceRequired" className="block text-sm font-medium text-gray-700 mb-2">
                     Service Required *
@@ -283,15 +255,14 @@ export default function Contact() {
                     aria-required="true"
                   >
                     <option value="">Select a service</option>
-                    <option value="House Removal">House Removal</option>
-                    <option value="Office Relocation">Office Relocation</option>
-                    <option value="Packing">Packing</option>
-                    <option value="Storage">Storage</option>
-                    <option value="Rubbish Removal">Rubbish Removal</option>
-                    <option value="Interstate Move">Interstate Move</option>
+                    {SERVICE_TYPES.map((service) => (
+                      <option key={service} value={service}>
+                        {/* Display "Removal" for "House Removal" as per original code */}
+                        {service === "House Removal" ? "Removal" : service}
+                      </option>
+                    ))}
                   </select>
                 </div>
-
                 <div>
                   <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
                     Message *
@@ -308,7 +279,6 @@ export default function Contact() {
                     aria-required="true"
                   />
                 </div>
-
                 {submitMessage && (
                   <p
                     className={`text-center text-sm ${
@@ -319,7 +289,6 @@ export default function Contact() {
                     {submitMessage}
                   </p>
                 )}
-
                 <button
                   type="submit"
                   className="w-full bg-gradient-to-r from-teal-500 to-teal-600 text-white py-3 rounded-lg font-semibold hover:from-teal-600 hover:to-teal-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"

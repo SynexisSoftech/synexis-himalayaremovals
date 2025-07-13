@@ -70,19 +70,15 @@ export default function Footer() {
                   Our Services
                 </Link>
               </li>
-              <li>
-                <Link href="/booking" className="text-gray-600 hover:text-teal-600 transition-colors">
-                  Booking
-                </Link>
-              </li>
+             
                <li>
                 <Link href="/Blogs" className="text-gray-600 hover:text-teal-600 transition-colors">
                   Blogs
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-600 hover:text-teal-600 transition-colors">
-                  Contact
+                <Link href="/booking" className="text-gray-600 hover:text-teal-600 transition-colors">
+                  Booking
                 </Link>
               </li>
             </ul>

@@ -1,13 +1,13 @@
 "use client"
-
 import Image from "next/image"
 import { useState } from "react"
 
 interface Service {
   title: string
   description: string
-  hoverDescription: string // Added this line
+  hoverDescription: string
   iconAlt: string
+  src: string
 }
 
 const services: Service[] = [
@@ -17,6 +17,7 @@ const services: Service[] = [
       "Comprehensive solutions to eliminate termites and prevent future infestations, safeguarding your property from structural damage.",
     hoverDescription: "Protect your home from costly termite damage with our advanced inspection and treatment plans.",
     iconAlt: "Termite icon",
+    src: "/termite.png?height=64&width=64&text=Termite", // Updated size
   },
   {
     title: "Bed Bug Heat Treatment",
@@ -25,6 +26,7 @@ const services: Service[] = [
     hoverDescription:
       "Experience a peaceful night's sleep again with our chemical-free, highly effective bed bug heat treatments.",
     iconAlt: "Bed bug icon",
+    src: "/bedbug.png?height=64&width=64&text=BedBug", // Updated size
   },
   {
     title: "Cockroach Gel Baiting System",
@@ -32,6 +34,7 @@ const services: Service[] = [
       "Advanced gel baiting system targeting cockroach colonies, providing discreet and highly effective elimination for a pest-free home.",
     hoverDescription: "Our discreet gel baiting system targets cockroaches at their source for long-term eradication.",
     iconAlt: "Cockroach icon",
+    src: "/cockroach.png?height=64&width=64&text=Roach", // Updated size
   },
   {
     title: "Mosquito Fogging & Larvae Treatment",
@@ -40,6 +43,7 @@ const services: Service[] = [
     hoverDescription:
       "Reclaim your outdoor spaces! Our treatments drastically reduce mosquito populations for enjoyable evenings.",
     iconAlt: "Mosquito icon",
+    src: "/mosquito.png?height=64&width=64&text=Mosquito", // Updated size
   },
   {
     title: "Anti-Bird Netting & Spike Installation",
@@ -48,11 +52,12 @@ const services: Service[] = [
     hoverDescription:
       "Prevent property damage and maintain hygiene with our humane and effective bird control solutions.",
     iconAlt: "Bird icon",
+    src: "/anti-bird.png?height=64&width=64&text=Bird", // Updated size
   },
 ]
 
 export default function PestControlServices() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null) // Added this line
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   return (
     <section className="py-16 md:py-24 lg:py-32 bg-[#f5fcfb]">
@@ -66,22 +71,22 @@ export default function PestControlServices() {
             return (
               <div
                 key={index}
-                className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-6 md:p-8 flex flex-col items-center text-center" // Updated classes
-                onMouseEnter={() => setHoveredIndex(index)} // Updated line
-                onMouseLeave={() => setHoveredIndex(null)} // Updated line
+                className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 p-6 md:p-8 flex flex-col items-start"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div className="mb-6">
                   <Image
-                    src="/placeholder.svg?height=64&width=64"
+                    src={service.src || "/placeholder.svg"}
                     alt={service.iconAlt}
-                    width={64}
-                    height={64}
-                    className="w-16 h-16"
+                    width={64} // Increased width
+                    height={64} // Increased height
+                    className="transition-transform duration-300 ease-in-out hover:scale-110" // Added hover animation
                   />
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">{service.title}</h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {hoveredIndex === index ? service.hoverDescription : service.description} {/* Updated line */}
+                <p className="text-gray-600 leading-relaxed text-left">
+                  {hoveredIndex === index ? service.hoverDescription : service.description}
                 </p>
               </div>
             )

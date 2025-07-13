@@ -1,4 +1,3 @@
-import React from "react";
 import Image from "next/image"
 
 export default function WhyTrustHimalaya() {
@@ -14,11 +13,11 @@ export default function WhyTrustHimalaya() {
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8 flex flex-col items-center text-center">
             <div className="mb-6">
               <Image
-                src="/placeholder.svg?height=64&width=64"
+                src="/certified.png?height=64&width=64"
                 alt="Certified technician icon"
                 width={64}
                 height={64}
-                className="w-16 h-16"
+                className="w-20 h-20 transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-45"
               />
             </div>
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Certified & Experienced Technicians</h3>
@@ -27,16 +26,15 @@ export default function WhyTrustHimalaya() {
               management.
             </p>
           </div>
-
           {/* Reason 2 */}
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8 flex flex-col items-center text-center">
             <div className="mb-6">
               <Image
-                src="/placeholder.svg?height=64&width=64"
+                src="/ecofriendly.png?height=64&width=64"
                 alt="Eco-friendly leaf icon"
                 width={64}
                 height={64}
-                className="w-16 h-16"
+                className="w-20 h-20 transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-45"
               />
             </div>
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Eco-Friendly & Safe Treatments</h3>
@@ -45,16 +43,15 @@ export default function WhyTrustHimalaya() {
               control methods.
             </p>
           </div>
-
           {/* Reason 3 */}
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8 flex flex-col items-center text-center">
             <div className="mb-6">
               <Image
-                src="/placeholder.svg?height=64&width=64"
+                src="/advancetechnology.png?height=64&width=64"
                 alt="Advanced technology icon"
                 width={64}
                 height={64}
-                className="w-16 h-16"
+                className="w-20 h-20 transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-45"
               />
             </div>
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Advanced Technology & Tools</h3>
@@ -63,16 +60,15 @@ export default function WhyTrustHimalaya() {
               eradication of pests.
             </p>
           </div>
-
           {/* Reason 4 */}
           <div className="bg-white rounded-lg shadow-md p-6 md:p-8 flex flex-col items-center text-center">
             <div className="mb-6">
               <Image
-                src="/placeholder.svg?height=64&width=64"
+                src="/quick.png?height=64&width=64"
                 alt="Quick response icon"
                 width={64}
                 height={64}
-                className="w-16 h-16"
+                className="w-20 h-20 transition-transform duration-300 ease-in-out hover:scale-110 hover:rotate-45"
               />
             </div>
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">Quick Response & Reliable Support</h3>
@@ -84,7 +80,6 @@ export default function WhyTrustHimalaya() {
         </div>
       </div>
       {/* Floating Call Now Button */}
-      
     </section>
   )
 }

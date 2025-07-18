@@ -263,17 +263,9 @@ export default function About() {
                       <div className="text-3xl mb-2">🏠</div>
                       <h4 className="font-semibold text-gray-800 text-sm">Residential Moving</h4>
                     </div>
-                    <div className="bg-white border-2 border-orange-100 rounded-lg p-4 text-center hover:border-orange-300 transition-colors duration-200 hover:shadow-md">
-                      <div className="text-3xl mb-2">🏢</div>
-                      <h4 className="font-semibold text-gray-800 text-sm">Office Relocation</h4>
-                    </div>
-                    <div className="bg-white border-2 border-blue-100 rounded-lg p-4 text-center hover:border-blue-300 transition-colors duration-200 hover:shadow-md">
-                      <div className="text-3xl mb-2">📦</div>
-                      <h4 className="font-semibold text-gray-800 text-sm">Packing Services</h4>
-                    </div>
                     <div className="bg-white border-2 border-green-100 rounded-lg p-4 text-center hover:border-green-300 transition-colors duration-200 hover:shadow-md">
                       <div className="text-3xl mb-2">🏪</div>
-                      <h4 className="font-semibold text-gray-800 text-sm">Storage Solutions</h4>
+                      <h4 className="font-semibold text-gray-800 text-sm">Rubbish Removal</h4>
                     </div>
                   </div>
                 </div>

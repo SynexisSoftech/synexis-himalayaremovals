@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import BookingForm from "../booking/book"
+
 
 
 // interface FAQItem {
@@ -75,7 +75,7 @@ export default function Hero() {
         </div>
 
         {/* Booking Section */}
-        <BookingForm />
+        
       </section>
 
       {/* Moving Process Section */}

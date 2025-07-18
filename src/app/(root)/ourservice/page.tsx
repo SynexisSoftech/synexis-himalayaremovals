@@ -98,39 +98,12 @@ export default function Services() {
       description:
         "Expert loading of furniture, boxes, and appliances. Local and interstate transportation with special equipment for heavy or fragile items.",
       features: ["Professional loading", "Local & interstate", "Special equipment", "Safe transportation"],
-      price: "Starting from $200",
       duration: "3-6 hours",
       popularity: 98,
       testimonial: {
         name: "Mike Chen",
         rating: 5,
         comment: "The team was incredibly efficient and handled our piano with such care. Highly recommend!",
-      },
-    },
-    {
-      id: "furniture-assembly",
-      icon: (
-        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <title>Furniture Assembly Service Icon</title>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-          />
-        </svg>
-      ),
-      title: "Furniture Assembly",
-      description:
-        "Disassemble large furniture for safe transport and reassemble at your new location. Expert handling of beds, tables, and complex furniture.",
-      features: ["Professional disassembly", "Safe transport", "Expert reassembly", "All furniture types"],
-      price: "Starting from $100",
-      duration: "1-3 hours",
-      popularity: 87,
-      testimonial: {
-        name: "Emily Rodriguez",
-        rating: 4,
-        comment: "They reassembled our complex dining set perfectly. Saved us hours of frustration!",
       },
     },
     {
@@ -150,7 +123,6 @@ export default function Services() {
       description:
         "We clear your space, so you can enjoy a cleaner, clutter-free environment.",
       features: ["Short & long-term", "All Types of Waste Handled", "Climate controlled", "Eco-Friendly Disposal"],
-      price: "Starting from $50/month",
       duration: "Flexible",
       popularity: 78,
       testimonial: {
@@ -159,32 +131,7 @@ export default function Services() {
         comment: "Clean, secure facility. Perfect for our temporary storage needs during renovation.",
       },
     },
-    {
-      id: "insurance-coverage",
-      icon: (
-        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <title>Insurance Coverage Icon</title>
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-          />
-        </svg>
-      ),
-      title: "Insurance Coverage",
-      description:
-        "Comprehensive insurance coverage for loss or damage during your move. Peace of mind with full protection for your valuable belongings.",
-      features: ["Full coverage", "Loss protection", "Damage coverage", "Peace of mind"],
-      price: "2-5% of item value",
-      duration: "Full move duration",
-      popularity: 92,
-      testimonial: {
-        name: "Lisa Thompson",
-        rating: 5,
-        comment: "Worth every penny for the peace of mind. Professional and thorough coverage.",
-      },
-    },
+  
     {
       id: "office-commercial-moves",
       icon: (
@@ -202,7 +149,6 @@ export default function Services() {
       description:
         "Specialized business relocation services including office equipment, files, and IT infrastructure. Minimal downtime for your business operations.",
       features: ["Business relocation", "Office equipment", "IT infrastructure", "Minimal downtime"],
-      price: "Custom quote",
       duration: "1-3 days",
       popularity: 85,
       testimonial: {
@@ -335,34 +281,7 @@ export default function Services() {
       </section>
 
       {/* Service Comparison Toggle */}
-      <section className="py-8 bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowComparison(!showComparison)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
-                  showComparison ? "bg-teal-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Compare Services ({comparedServices.length}/3)
-              </button>
-              {comparedServices.length > 0 && (
-                <button onClick={() => setComparedServices([])} className="text-sm text-gray-500 hover:text-gray-700">
-                  Clear All
-                </button>
-              )}
-            </div>
-
-            <button
-              onClick={() => setShowRequestModal(true)}
-              className="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              Request Service
-            </button>
-          </div>
-        </div>
-      </section>
+    
 
       {/* Services Grid */}
       <section className="py-16 bg-white">

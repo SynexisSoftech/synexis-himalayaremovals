@@ -205,7 +205,7 @@ export default async function BlogPage() {
         {/* All Posts */}
        
         {/* Newsletter Signup */}
-        <section className="mt-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 md:p-12 text-center">
+        <section className="mt-20 bg-gradient-to-r from-[#00a160] to-[#25d991] rounded-2xl p-8 md:p-12 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Stay Updated</h2>
           <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
             Subscribe to our newsletter and never miss our latest articles and insights.
@@ -214,7 +214,7 @@ export default async function BlogPage() {
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="flex-1 px-4 py-3 bg-white rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-white/50"
             />
             <button className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors">
               Subscribe

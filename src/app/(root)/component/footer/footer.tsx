@@ -95,9 +95,10 @@ export default function Footer() {
               <li>
                 Interstate Move
               </li>
-              <li>
-               Rubbish Removal
-              </li>      
+               <li>
+               Pest Control
+              </li>       
+
             </ul>
           </div>
 

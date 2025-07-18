@@ -98,6 +98,7 @@ export default function Services() {
       description:
         "Expert loading of furniture, boxes, and appliances. Local and interstate transportation with special equipment for heavy or fragile items.",
       features: ["Professional loading", "Local & interstate", "Special equipment", "Safe transportation"],
+      price: "Starting from $200",
       duration: "3-6 hours",
       popularity: 98,
       testimonial: {
@@ -106,6 +107,7 @@ export default function Services() {
         comment: "The team was incredibly efficient and handled our piano with such care. Highly recommend!",
       },
     },
+   
     {
       id: "Rubbish Removal",
       icon: (
@@ -123,6 +125,7 @@ export default function Services() {
       description:
         "We clear your space, so you can enjoy a cleaner, clutter-free environment.",
       features: ["Short & long-term", "All Types of Waste Handled", "Climate controlled", "Eco-Friendly Disposal"],
+      price: "Starting from $50/month",
       duration: "Flexible",
       popularity: 78,
       testimonial: {
@@ -131,7 +134,7 @@ export default function Services() {
         comment: "Clean, secure facility. Perfect for our temporary storage needs during renovation.",
       },
     },
-  
+   
     {
       id: "office-commercial-moves",
       icon: (
@@ -149,6 +152,7 @@ export default function Services() {
       description:
         "Specialized business relocation services including office equipment, files, and IT infrastructure. Minimal downtime for your business operations.",
       features: ["Business relocation", "Office equipment", "IT infrastructure", "Minimal downtime"],
+      price: "Custom quote",
       duration: "1-3 days",
       popularity: 85,
       testimonial: {
@@ -281,7 +285,7 @@ export default function Services() {
       </section>
 
       {/* Service Comparison Toggle */}
-    
+     
 
       {/* Services Grid */}
       <section className="py-16 bg-white">
